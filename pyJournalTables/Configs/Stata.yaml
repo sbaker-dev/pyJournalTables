@@ -1,0 +1,10 @@
+Observations: "Number of obs"
+F_Stat: "F("
+F_Prob: "Prob > F"
+R_Sqr: "R-squared"
+Adj_R_Sqr: "Adj R-squared"
+Within_R_Sqr: "Within R-sq."
+Root_MSE: "Root MSE"
+Adjusted_Clusters: "Std. Err. adjusted for"
+
+GLS_Headers: ["coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
