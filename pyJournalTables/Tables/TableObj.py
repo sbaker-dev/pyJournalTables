@@ -25,3 +25,6 @@ class TableObj:
         self.conf_95_max = None
 
         pass
+
+    def conf_interval(self, var_key, rounding=4):
+        return f"({round(self.conf_95_min[var_key], rounding)} to {round(self.conf_95_max[var_key], rounding)})"
