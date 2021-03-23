@@ -1,1 +1,2 @@
-from .Regressions import StataRegression, stata_reg_parser
+from .StataCommon import StataCommon
+from .StataExtractor import StataExtractor

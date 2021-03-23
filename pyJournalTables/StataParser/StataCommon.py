@@ -7,9 +7,28 @@ class StataCommon:
     def __init__(self, raw_table, config_keys, body_header_index=0):
         """
 
-        :param raw_table:
-        :param config_keys:
+        :param raw_table: The lines for a given table, parsed from a .log file
+        :type raw_table: list
+
+        :param config_keys: The Configuration Object to use
         :type config_keys: ConfigObj
+
+        :param body_header_index: Number of headers to skip in addition to the first
+        :type body_header_index: int
+
+        Attribute descriptions with * from https://stats.idre.ucla.edu/stata/output/regression-analysis/
+
+        Attributes
+        -----------
+        | Observations*: The number of observations used in the regression
+        | F_Stat*: The Mean Square Model divided by the Mean Square Residual yields the F stat.
+        | F_Prob*: P value associate with the F Stat
+        | R-Squared*: The proportion of variance in the dependent variable which be predicted from independent variables
+        | Adj-R-Squared*: R squared adjusted for the number of independent variables
+        | Root MSE*: The standard deviation of the error term
+        | Adjusted Clusters: The number of clusters the standard error was adjusted by, optional
+
+        # TODO do the rest of them
         """
 
         self._raw_table = raw_table
