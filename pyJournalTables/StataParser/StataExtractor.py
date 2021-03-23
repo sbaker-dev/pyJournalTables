@@ -1,9 +1,6 @@
-from pyJournalTables.StataParser.Summeries import Summary
-from pyJournalTables.StataParser.Regressions import StataRegression
-
-from pyJournalTables.Configs import ConfigObj
-
 from pyJournalTables.StataParser.StataCommon import StataCommon
+from pyJournalTables.Tables import OLS, SummaryStats, Tabulate
+from pyJournalTables.Configs import ConfigObj
 
 from pathlib import Path
 import re
@@ -11,11 +8,6 @@ import re
 
 class StataExtractor:
     def __init__(self, log_path, key_override=None, regression_type="OLS"):
-        """
-
-        :param log_path:
-
-        """
 
         # Check the file is a log file
         self.log_path = Path(log_path)
@@ -136,19 +128,32 @@ class StataExtractor:
 
     @property
     def ols_tables(self):
-        for table in self._ols_raw:
+        """
+        Return the OLS tables from this log
 
-            StataRegression(table, self._config, self._regression_type)
-            break
-        return
+        :return: A list of OLS table objects
+        :type: list[OLS]
+        """
+        return [OLS(StataCommon(table, self._config, 1)) for table in self._ols_raw]
+
+    @property
+    def sum_tables(self):
+        """
+        Returns the Summary Stats tables for this log
+
+        :return: A list of SummaryStats
+        :rtype: list[SummaryStats]
+        """
+        return [SummaryStats(StataCommon(table, self._config)) for table in self._summary_raw]
+
+    @property
+    def tab_tables(self):
+        """
+        Returns the tabulated tables for this log
+
+        :return: A list of Tabulate
+        :rtype: list[Tabulate]
+        """
+        return [Tabulate(StataCommon(table, self._config)) for table in self._tab_raw]
 
 
-
-
-
-if __name__ == '__main__':
-    # StataExtractor(r"C:\Users\Samuel\PycharmProjects\AsthmaDisease\Figures\Logs\Summary.log")
-    a = StataExtractor(r"C:\Users\Samuel\PycharmProjects\AsthmaDisease\Figures\Logs\Scarlet.log")
-    # StataExtractor(r"C:\Users\Samuel\PycharmProjects\pyJournalTables\Tests\TestTab.log")
-
-    b = a.ols_tables
