@@ -39,12 +39,12 @@ class OLS:
         self.conf_95_min = None
         self.conf_95_max = None
 
+        # Set the body attributes
+        [setattr(self, h, [line[i] for line in self.common_obj.body]) for i, h in enumerate(self._body_headers)]
+
         # Set variable names
         self.phenotype = self.common_obj.phenotype
         self.variables = self.common_obj.variables
-
-        # Set the body attributes
-        [setattr(self, h, [line[i] for line in self.common_obj.body]) for i, h in enumerate(self._body_headers)]
 
     def __repr__(self):
         """Print the regression to show what is within it"""
