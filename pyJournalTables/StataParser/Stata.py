@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 
 
-class StataTable(TableObj):
+class StataRegression(TableObj):
     def __init__(self, table_lines, table_type, key_override=None):
         """
 
@@ -198,10 +198,11 @@ class StataTable(TableObj):
                 raise ValueError(f"Could not clean {value}")
 
 
-def stata_table_parser(stata_log_file, table_type, table_start_key="Number of obs", divider_limit=3):
+def stata_reg_parser(stata_log_file, table_type, table_start_key="Number of obs", divider_limit=3):
     """
     This is the importer that the user will provide the path to that will extract each table in log by iterating though
-    it and using divider counts (lines of ---) to split the tables from the log
+    it and using divider counts (lines of ---) to split the tables from the log. This log type is specific to regression
+    output
 
     :param stata_log_file: Path to the stata log file, must be valid and have the extension .log
     :type stata_log_file: str | Path
@@ -219,7 +220,7 @@ def stata_table_parser(stata_log_file, table_type, table_start_key="Number of ob
     :type divider_limit: int
 
     :return: A list StataTable objects
-    :rtype: list[StataTable]
+    :rtype: list[StataRegression]
     """
 
     # Set the path, validate it exists, and is of the right type
@@ -255,7 +256,7 @@ def stata_table_parser(stata_log_file, table_type, table_start_key="Number of ob
                     table_lines = [table_line for i, table_line in enumerate(extractor) if start_index <= i <= index]
 
                 # Append the object to the tables list and the current index to the set table indexes.
-                tables.append(StataTable(table_lines, table_type))
+                tables.append(StataRegression(table_lines, table_type))
                 set_tables.append(start_index)
 
     return tables
