@@ -46,6 +46,31 @@ class ConfigObj:
         return self._args_dict["Adjusted_Clusters"]
 
     @property
-    def key_gls(self):
-        """Headers of the table body for GLS regressions"""
-        return self._args_dict["GLS_Headers"]
+    def key_ols_headers(self):
+        """Headers of the table body for OLS regressions"""
+        return self._args_dict["OLS_Headers"]
+
+    @property
+    def key_sum_headers(self):
+        """Headers to extract the summary body"""
+        return self._args_dict["Summary_Headers"]
+
+    @property
+    def key_tabulate_headers(self):
+        """Headers to extract the tabulated body"""
+        return self._args_dict["Tabulate_Headers"]
+
+    @property
+    def key_sum_divider(self):
+        """List of str required to act as the start point of a summary stat table"""
+        return self._args_dict["Summary_Divider"]
+
+    @property
+    def key_ols_divider(self):
+        """List of str required to act as the start point of ols output"""
+        return self._args_dict["OLS_Divider"]
+
+    @property
+    def key_tab_divider(self):
+        """List of str required to act as the start point of a tabulate table"""
+        return self._args_dict["Tab_Divider"]
