@@ -1,5 +1,5 @@
 from pyJournalTables.StataParser.StataCommon import StataCommon
-from pyJournalTables.Tables import OLS, SummaryStats, Tabulate
+from pyJournalTables.Tables import HDFE, SummaryStats, Tabulate
 from pyJournalTables.Configs import ConfigObj
 
 from pathlib import Path
@@ -18,7 +18,8 @@ class StataExtractor:
         self._config = self._set_keys(key_override)
 
         # Extract known tables from the log file
-        self._ols_raw = self._extract_raw(self._config.key_ols_divider, 1)
+        self._ols_raw = self._extract_raw(self._config.key_ols_divider, 1, skip_indexes=[9])
+        self._hdfe_raw = self._extract_raw(self._config.key_hdfe_divider, 1, skip_indexes=[7])
         self._summary_raw = self._extract_raw(self._config.key_sum_divider)
         self._tab_raw = self._extract_raw(self._config.key_tab_divider, skip_indexes=[0])
 
@@ -126,14 +127,14 @@ class StataExtractor:
         return [f"-0.{v[2:]}" if v[0:2] == "-." else v for v in subbed.split(" ") if len(v) > 0]
 
     @property
-    def ols_tables(self):
+    def hdfe_tables(self):
         """
-        Return the OLS tables from this log
+        Return the HDFE tables, created by reghdfe http://scorreia.com/software/reghdfe/index.html , for this log
 
-        :return: A list of OLS table objects
-        :type: list[OLS]
+        :return: A list of HDFE table objects
+        :type: list[HDFE]
         """
-        return [OLS(StataCommon(table, self._config, 1)) for table in self._ols_raw]
+        return [HDFE(StataCommon(table, self._config, 1)) for table in self._hdfe_raw]
 
     @property
     def sum_tables(self):

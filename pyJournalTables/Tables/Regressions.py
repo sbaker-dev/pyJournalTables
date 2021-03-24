@@ -1,7 +1,7 @@
 from ..StataParser import StataCommon
 
 
-class OLS:
+class HDFE:
     def __init__(self, common_object):
         """
         OLS specific output

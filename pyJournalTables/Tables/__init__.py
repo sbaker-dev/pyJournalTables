@@ -1,2 +1,2 @@
-from .Regressions import OLS
+from .Regressions import HDFE
 from .Summary import SummaryStats, Tabulate
