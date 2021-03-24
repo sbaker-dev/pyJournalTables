@@ -1,5 +1,5 @@
 from pyJournalTables.StataParser.StataCommon import StataCommon
-from pyJournalTables.Tables import HDFE, SummaryStats, Tabulate
+from pyJournalTables.Tables import *
 from pyJournalTables.Configs import ConfigObj
 
 from pathlib import Path
@@ -125,6 +125,15 @@ class StataExtractor:
         """
         subbed = "".join([re.sub("\n", "", value) for value in line])
         return [f"-0.{v[2:]}" if v[0:2] == "-." else v for v in subbed.split(" ") if len(v) > 0]
+
+    def ols_tables(self):
+        """
+        Return the OLS tables for this log
+
+        :return: A list of OLS table objects
+        :type: list[OLS]
+        """
+        return [OLS(StataCommon(table, self._config, skip_indexes=[0, 1, 2, 3, 4, 5])) for table in self._ols_raw]
 
     @property
     def hdfe_tables(self):

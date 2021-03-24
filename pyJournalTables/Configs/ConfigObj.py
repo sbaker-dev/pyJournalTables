@@ -52,13 +52,18 @@ class ConfigObj:
 
     @property
     def key_sum_headers(self):
-        """Headers to extract the summary body"""
+        """Headers of the table body for summary stats"""
         return self._args_dict["Summary_Headers"]
 
     @property
     def key_tabulate_headers(self):
         """Headers to extract the tabulated body"""
         return self._args_dict["Tabulate_Headers"]
+
+    @property
+    def key_hdfe_headers(self):
+        "Headers of the table body for HDFE"
+        return self._args_dict["OLS_Headers"]
 
     @property
     def key_sum_divider(self):
@@ -69,6 +74,11 @@ class ConfigObj:
     def key_ols_divider(self):
         """List of str required to act as the start point of ols output"""
         return self._args_dict["OLS_Divider"]
+
+    @property
+    def key_hdfe_divider(self):
+        """List of str required to act as the start point of HDFE output"""
+        return self._args_dict["HDFE_Divider"]
 
     @property
     def key_tab_divider(self):
