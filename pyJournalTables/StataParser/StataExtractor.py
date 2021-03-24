@@ -7,7 +7,7 @@ import re
 
 
 class StataExtractor:
-    def __init__(self, log_path, key_override=None, regression_type="OLS"):
+    def __init__(self, log_path, key_override=None):
 
         # Check the file is a log file
         self.log_path = Path(log_path)
@@ -16,7 +16,6 @@ class StataExtractor:
 
         # Set the config args
         self._config = self._set_keys(key_override)
-        self._regression_type = regression_type
 
         # Extract known tables from the log file
         self._ols_raw = self._extract_raw(self._config.key_ols_divider, 1)
@@ -155,5 +154,3 @@ class StataExtractor:
         :rtype: list[Tabulate]
         """
         return [Tabulate(StataCommon(table, self._config)) for table in self._tab_raw]
-
-
