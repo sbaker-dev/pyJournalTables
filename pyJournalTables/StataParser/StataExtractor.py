@@ -126,6 +126,7 @@ class StataExtractor:
         subbed = "".join([re.sub("\n", "", value) for value in line])
         return [f"-0.{v[2:]}" if v[0:2] == "-." else v for v in subbed.split(" ") if len(v) > 0]
 
+    @property
     def ols_tables(self):
         """
         Return the OLS tables for this log
