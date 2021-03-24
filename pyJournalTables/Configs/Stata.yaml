@@ -7,7 +7,7 @@ Within_R_Sqr: ['Within', 'R-sq.']
 Root_MSE: ['Root', 'MSE', '=']
 Adjusted_Clusters: ['(Std.', 'Err.', 'adjusted', 'for']
 
-OLS_Divider: ['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '=', '169,354']
+OLS_Divider: ['Number', 'of', 'obs']
 Summary_Divider: ['Variable', '|', 'Obs', 'Mean', 'Std.', 'Dev.', 'Min', 'Max']
 Tab_Divider: ['|', 'Freq.', 'Percent', 'Cum.']
 
