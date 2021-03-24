@@ -4,7 +4,7 @@ import re
 
 
 class StataCommon:
-    def __init__(self, raw_table, config_keys, body_header_index=0):
+    def __init__(self, raw_table, config_keys, body_header_index=0, skip_indexes=None):
         """
 
         :param raw_table: The lines for a given table, parsed from a .log file
@@ -52,7 +52,7 @@ class StataCommon:
         self.conf_95_min = None
         self.conf_95_max = None
 
-        self.phenotype, self.variables, self.body = self._extract_body(body_header_index)
+        self.phenotype, self.variables, self.body = self._extract_body(body_header_index, skip_indexes)
 
     def _set_stata_headers(self, key, return_type=float):
         """
@@ -95,23 +95,39 @@ class StataCommon:
         # Restore floats
         return [value if value[0] != "0" else f"0.{value[1:]}" for value in values_list]
 
-    def _extract_body(self, skip_lines=0):
+    def _extract_body(self, skip_lines=0, skip_indexes=None):
         """
         This extracts the body of the table by looking for the stata dividers and then parsing out the unique elements.
         Use the first element of the first line as the phenotype, and then return the rest as column headers will be set
         based on table type.
 
+        :param skip_lines: How many additional lines you wish to skip after the header, defaults to 0
+        :type skip_lines: int
+
+        :param skip_indexes: Indexes to ignore looking for elements, defaults to None
+        :type skip_indexes: None | list[int]
+
         :return: The rows from the body as if it where a csv row
         :rtype: list
         """
-        # Isolate lines with table lines within them
-        table_elements = [index for index, line in enumerate(self._raw_table) if "|" in line]
+
+        if skip_indexes is None:
+            skip_indexes = []
+
+        # Isolate lines with table lines within them, skip indexes in the skip_indexes if provided
+        table_elements = [index for index, line in enumerate(self._raw_table)
+                          if "|" in line and index not in skip_indexes]
 
         # Isolate these lines, minus the headers, without the table line elements
         body_lines = []
         for index, line in enumerate(self._raw_table):
             if min(table_elements) + skip_lines <= index and index in table_elements:
-                body_lines.append([value for value in line if value != "|"])
+
+                # Not all regression types will be without blanks, so this only adds rows that where the value is more
+                # than just he name of the variable
+                values_stripped = [value for value in line if value != "|"]
+                if len(values_stripped) > 1:
+                    body_lines.append(values_stripped)
 
         # Extract the variable names, with the first one always being the phenotype/outcome
         variable_names = [line[0] for line in body_lines]
