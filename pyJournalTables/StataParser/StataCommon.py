@@ -45,6 +45,17 @@ class StataCommon:
         self.root_mse = self._set_stata_headers(self.keys.key_root_mse)
         self.adjusted_clusters = self._set_stata_headers(self.keys.key_adjusted_clusters, int)
 
+        # Headers for Fixed effects
+        self.within_r_sqr = self._set_stata_headers(self.keys.key_fe_rsq_within, key_extract=0)
+        self.between_r_sqr = self._set_stata_headers(self.keys.key_fe_rsq_between, key_extract=0)
+        self.overall_r_sqr = self._set_stata_headers(self.keys.key_fe_rsq_overall, key_extract=0)
+        self.number_of_groups = None  # todo
+        self.obs_per_group_min = self._set_stata_headers(self.keys.key_fe_obs_per_group_min)
+        self.obs_per_group_max = self._set_stata_headers(self.keys.key_fe_obs_per_group_max)
+        self.obs_per_group_avg = self._set_stata_headers(self.keys.key_fe_obs_per_group_avg)
+
+        # todo need to extract sigma_u etc which is after the headers, probably just need a direct line call?
+
         # Initialise potential values from the body of the table
         self.coefficients = None
         self.std_errs = None
@@ -55,7 +66,10 @@ class StataCommon:
 
         self.phenotype, self.variables, self.body = self._extract_body(body_header_index, skip_indexes)
 
-    def _set_stata_headers(self, key, return_type=float):
+    def __repr__(self):
+        return f"CommonTable for: {self.phenotype} = {' + '.join(v for v in self.variables)}"
+
+    def _set_stata_headers(self, key, return_type=float, key_extract=None):
         """
         Set an attribute the value header above the stata table body surrounded by ---
 
