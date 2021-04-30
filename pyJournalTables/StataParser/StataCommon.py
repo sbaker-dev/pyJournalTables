@@ -75,6 +75,12 @@ class StataCommon:
                 if len(values) == 0:
                     raise KeyError(f"{key} was found but no numerical value exists in line")
 
+                elif str(key_extract).isdigit():
+                    try:
+                        return return_type(values[key_extract])
+                    except KeyError:
+                        raise KeyError(f"{key} was found but {key_extract} is out of bounds to extract from {values}")
+
                 # If only one value is found, return the int of that value
                 elif len(values) == 1:
                     return return_type(values[0])
