@@ -1,5 +1,6 @@
 from ..Configs import ConfigObj
 
+from string import ascii_letters
 import re
 
 
@@ -92,14 +93,17 @@ class StataCommon:
     @staticmethod
     def _extract_values(line):
         """Extract numerical values from a line"""
-        # Remove anything that isn't a number
-        values_list = [re.sub(r"\D", "", line) for line in line.split(" ")]
 
-        # Remove empty values
-        values_list = [value for value in values_list if value != ""]
+        values = [split_line.strip(ascii_letters).replace(",", "") for split_line in line.split()]
 
-        # Restore floats
-        return [value if value[0] != "0" else f"0.{value[1:]}" for value in values_list]
+        values_return = []
+        for v in values:
+            try:
+                values_return.append(float(v))
+            except ValueError:
+                pass
+
+        return values_return
 
     def _extract_body(self, skip_lines=0, skip_indexes=None):
         """
