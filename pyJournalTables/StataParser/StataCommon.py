@@ -138,6 +138,10 @@ class StataCommon:
         if skip_indexes is None:
             skip_indexes = []
 
+        # We may need to subtract indexes from the bottom, in which case the index is relative to explanatory variables
+        elif sum([v < 0 for v in skip_indexes]) > 0:
+            skip_indexes = [v if v > 0 else (len(self._raw_table) - 2) + v for v in skip_indexes]
+
         # Isolate lines with table lines within them, skip indexes in the skip_indexes if provided
         table_elements = [index for index, line in enumerate(self._raw_table)
                           if "|" in line and index not in skip_indexes]
