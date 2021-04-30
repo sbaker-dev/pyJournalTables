@@ -22,6 +22,7 @@ class StataExtractor:
         self._hdfe_raw = self._extract_raw(self._config.key_hdfe_divider, 1, skip_indexes=[7])
         self._summary_raw = self._extract_raw(self._config.key_sum_divider)
         self._tab_raw = self._extract_raw(self._config.key_tab_divider, skip_indexes=[0])
+        self._fe_raw = self._extract_raw(self._config.key_fe_within_divider, 3, skip_indexes=[7])
 
     @staticmethod
     def _set_keys(key_override):
@@ -145,6 +146,14 @@ class StataExtractor:
         :type: list[HDFE]
         """
         return [HDFE(StataCommon(table, self._config, 1)) for table in self._hdfe_raw]
+
+    @property
+    def fe_tables(self):
+        """
+        Returns the Fixed effects within regression tables
+        :return: list[FEWithin]
+        """
+        return [FEWithin(StataCommon(table, self._config, skip_indexes=[-1, -2, -3])) for table in self._fe_raw]
 
     @property
     def sum_tables(self):
