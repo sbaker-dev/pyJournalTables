@@ -146,3 +146,33 @@ class HDFE(RegCommon):
     def __repr__(self):
         """Print the regression to show what is within it"""
         return f"{self.phenotype} = {' + '.join(v for v in self.variables)}"
+
+
+class FEWithin(RegCommon):
+    def __init__(self, common_object):
+        # Load the common object
+        super().__init__(common_object)
+
+        # Load the common object
+        self.common_obj = common_object
+
+        # Set the attributes we want to extract for the body, HDFE has the same headers as OLS.
+        self._body_headers = self.common_obj.keys.key_hdfe_headers
+
+        # Initialise the values that should be found in the table header for this table
+        self.observations = self.common_obj.observations
+        self.f_prob = self.common_obj.f_prob
+        self.within_r_sqr = self.common_obj.within_r_sqr
+        self.between_r_sqr = self.common_obj.between_r_sqr
+        self.overall_r_sqr = self.common_obj.overall_r_sqr
+        self.number_of_groups = None  # todo
+        self.obs_per_group_min = self.common_obj.obs_per_group_min
+        self.obs_per_group_max = self.common_obj.obs_per_group_max
+        self.obs_per_group_avg = self.common_obj.obs_per_group_avg
+
+        # Set the body attributes
+        [setattr(self, h, [line[i] for line in self.common_obj.body]) for i, h in enumerate(self._body_headers)]
+
+    def __repr__(self):
+        """Print the regression to show what is within it"""
+        return f"{self.phenotype} = {' + '.join(v for v in self.variables)}"
