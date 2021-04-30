@@ -62,8 +62,32 @@ class ConfigObj:
 
     @property
     def key_hdfe_headers(self):
-        "Headers of the table body for HDFE"
+        """Headers of the table body for HDFE"""
         return self._args_dict["OLS_Headers"]
+
+    @property
+    def key_fe_rsq_within(self):
+        return self._args_dict["FE_Within_R_Sqr"]
+
+    @property
+    def key_fe_rsq_between(self):
+        return self._args_dict["FE_Between_R_Sqr"]
+
+    @property
+    def key_fe_rsq_overall(self):
+        return self._args_dict["FE_Overall_R_Sqr"]
+
+    @property
+    def key_fe_obs_per_group_min(self):
+        return self._args_dict["FE_Obs_Per_Group_Min"]
+
+    @property
+    def key_fe_obs_per_group_max(self):
+        return self._args_dict["FE_Obs_Per_Group_Max"]
+
+    @property
+    def key_fe_obs_per_group_avg(self):
+        return self._args_dict["FE_Obs_Per_Group_Avg"]
 
     @property
     def key_sum_divider(self):
@@ -84,3 +108,7 @@ class ConfigObj:
     def key_tab_divider(self):
         """List of str required to act as the start point of a tabulate table"""
         return self._args_dict["Tab_Divider"]
+
+    @property
+    def key_fe_within_divider(self):
+        return self._args_dict["FEWithin"]
