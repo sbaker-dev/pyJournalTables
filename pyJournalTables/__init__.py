@@ -1,1 +1,2 @@
 from pyJournalTables.StataParser import StataExtractor
+from pyJournalTables.Writers import write_forest_methods
