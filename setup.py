@@ -9,12 +9,12 @@ Taking multiple output forms into journal tables
 """
 LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 
-DISTNAME = 'pyJournalTables'
+DISTNAME = 'stataLogObject'
 MAINTAINER = 'Samuel Baker'
 MAINTAINER_EMAIL = 'samuelbaker.researcher@gmail.com'
 LICENSE = 'MIT'
-DOWNLOAD_URL = "https://github.com/sbaker-dev/pyJournalTables"
-VERSION = "0.03.0"
+DOWNLOAD_URL = "https://github.com/sbaker-dev/stataLogObject"
+VERSION = "0.01.0"
 PYTHON_REQUIRES = ">=3.7"
 
 INSTALL_REQUIRES = [
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     import sys
 
     if sys.version_info[:2] < (3, 7):
-        raise RuntimeError("pyJournalTables requires python >= 3.7.")
+        raise RuntimeError("stataLogObject requires python >= 3.7.")
 
     setup(
         name=DISTNAME,

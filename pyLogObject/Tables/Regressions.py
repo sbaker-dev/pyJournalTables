@@ -112,7 +112,7 @@ class HDFE(RegCommon):
         """
         HDFE specific output
 
-        HDFE content from reghdfe: http://scorreia.com/software/reghdfe/index.html
+        HDFE content from reghdfe: https://scorreia.com/software/reghdfe/index.html
 
         Note
         ------

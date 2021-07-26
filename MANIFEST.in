@@ -1,1 +1,1 @@
-include pyJournalTables/Configs/Stata.yaml
+include pyLogObject/Configs/Stata.yaml

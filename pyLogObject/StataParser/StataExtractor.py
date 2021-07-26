@@ -140,7 +140,7 @@ class StataExtractor:
     @property
     def hdfe_tables(self):
         """
-        Return the HDFE tables, created by reghdfe http://scorreia.com/software/reghdfe/index.html , for this log
+        Return the HDFE tables, created by reghdfe https://scorreia.com/software/reghdfe/index.html , for this log
 
         :return: A list of HDFE table objects
         :type: list[HDFE]
