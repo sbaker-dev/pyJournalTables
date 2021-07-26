@@ -1,1 +1,1 @@
-include pyLogObject/Configs/Stata.yaml
+include stataLogObject/Configs/Stata.yaml
