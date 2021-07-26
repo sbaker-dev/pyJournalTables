@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Taking multiple output forms into journal tables"
 LONG_DESCRIPTION = """
-# pyJournalTables
+# stataLogObject
 
 Taking multiple output forms into journal tables
 
