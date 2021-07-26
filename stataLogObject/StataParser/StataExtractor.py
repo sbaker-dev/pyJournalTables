@@ -1,6 +1,6 @@
-from pyLogObject.StataParser.StataCommon import StataCommon
-from pyLogObject.Tables import *
-from pyLogObject.Configs import ConfigObj
+from stataLogObject.StataParser.StataCommon import StataCommon
+from stataLogObject.Tables import *
+from stataLogObject.Configs import ConfigObj
 
 from pathlib import Path
 import re
