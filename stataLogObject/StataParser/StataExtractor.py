@@ -127,6 +127,29 @@ class StataExtractor:
         subbed = "".join([re.sub("\n", "", value) for value in line])
         return [f"-0.{v[2:]}" if v[0:2] == "-." else v for v in subbed.split(" ") if len(v) > 0]
 
+    def censure_log(self):
+        """
+        Logs from stata often contain a path which can be problematic if they are to sensitive locations so this
+        censures them.
+
+        :return: Nothing, override the log file
+        :rtype: None
+        """
+
+        # Remove the path to log: locations
+        log_raw = []
+        with open(self.log_path, "r") as log_file:
+            for line in log_file:
+                if "log:" in line:
+                    log_raw.append(f"{line.split(':')[0]}: \n")
+                else:
+                    log_raw.append(line)
+
+        # Override the file
+        with open(self.log_path, "w") as log_file:
+            for line in log_raw:
+                log_file.write(line)
+
     @property
     def ols_tables(self):
         """
