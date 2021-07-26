@@ -1,6 +1,6 @@
-from pyJournalTables.StataParser.StataCommon import StataCommon
-from pyJournalTables.Tables import *
-from pyJournalTables.Configs import ConfigObj
+from pyLogObject.StataParser.StataCommon import StataCommon
+from pyLogObject.Tables import *
+from pyLogObject.Configs import ConfigObj
 
 from pathlib import Path
 import re
