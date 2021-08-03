@@ -109,7 +109,16 @@ class TableConfigs:
                   Header('Root MSE ='), Header('Adj R-squared =')),
         IsolateBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
         Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
-        ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"])
+        ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
+    )
+
+    ols_clu: Table = Table(
+        LinearRHS(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F ='), Header('R-squared ='),
+                  Header('Root MSE =')),
+        IsolateBody(),
+        Extractor(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
+        ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
+    )
 
 
 class ConfigObj:
