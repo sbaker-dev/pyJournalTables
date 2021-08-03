@@ -1,4 +1,63 @@
 from miscSupports import load_yaml
+from dataclasses import dataclass, field
+from typing import List, Optional
+
+
+@dataclass()
+class RightHandSupports:
+    """The right hand side of the supporting information in the log at the top of each table"""
+    obs: List = field(default_factory=lambda: ['Number', 'of', 'obs', '='])
+    f_stat: List = field(default_factory=lambda: ["F("])
+    f_prop: List = field(default_factory=lambda: ['Prob', '>', 'F', '='])
+    r_sqr: List = field(default_factory=lambda: ['R-squared', '='])
+    adj_r_sqr: List = field(default_factory=lambda: ['Adj', 'R-squared', '='])
+    within_r_sqr: List = field(default_factory=lambda: ['Within', 'R-sq.'])
+    root_mse: List = field(default_factory=lambda: ['Root', 'MSE', '='])
+    adj_clusters: List = field(default_factory=lambda: ['(Std.', 'Err.', 'adjusted', 'for'])
+
+
+@dataclass()
+class Extractor:
+    """
+    | Contains the information needed for extraction
+    |
+    | *Attributes*:
+    |    **divider (list)**: The divider to isolate the elements
+    |    **separator (int)**: The number of spaces allowed before the table is considered finished and is saved
+    |    **skip_indexes** (Optional[list]):  Option list of elements found in the log needs to have certain elements
+    |   skipped
+
+    """
+    divider: List
+    separator: int
+    skip_indexes: List = field(default_factory=lambda: [])
+
+
+@dataclass()
+class TableExtractions:
+    ols: Extractor = Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9])
+    hdfe: Extractor = Extractor(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7])
+    summary: Extractor = Extractor(['Variable', '|', 'Obs', 'Mean', 'Std.', 'Dev.', 'Min', 'Max'], 0)
+    tab: Extractor = Extractor(['|', 'Freq.', 'Percent', 'Cum.'], 0, [0])
+    fe_within: Extractor = Extractor(['Fixed-effects', '(within)', 'regression', 'Number', 'of', 'obs', '='], 3, [7])
+
+
+@dataclass
+class TableHeaders:
+    """Contains the headers of each table type"""
+    reg: List = field(
+        default_factory=lambda: ["coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"])
+    summary: List = field(default_factory=lambda: ["obs", "mean", "std_dev", "min", "max"])
+    tab: List = field(default_factory=lambda: ["frequency", "percent", "cumulative"])
+
+
+@dataclass
+class ConfigObj2:
+    """This contains configurations for extraction for each element in a log"""
+
+    right_supports: RightHandSupports = RightHandSupports()
+    isolates: TableExtractions = TableExtractions()
+    table_headers: TableHeaders = TableHeaders()
 
 
 class ConfigObj:
