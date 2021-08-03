@@ -32,9 +32,10 @@ class StataTable:
 
     def set_header_value(self, header, var_name):
         """
+        Set a given header value
 
         :param header:
-        :type header: Header
+        :type header: Header | None
 
         :param var_name: The name of this header for Error Handling
         :type var_name: str
@@ -45,15 +46,29 @@ class StataTable:
         :raises HeaderKeyExtractError InvalidKeyExtract: If the header.key_extract leads to a KeyError and No line found
             for header.extractor respectively
         """
+
+        # Some Headers are optional, return None if this occurs
+        if not header:
+            return None
+
         for line in self._raw:
 
             line_str = " ".join(line)
             if header.extractor in line_str:
                 values = extract_values(line_str)
-                try:
-                    return header.var_type(values[header.key_extract])
-                except KeyError:
-                    raise HeaderKeyExtractError(header.key_extract, values)
+
+                # Some variables may be found, but not set. For example F stat when very small sample. Warn user when
+                # this happens as it could also be due to an issue of extraction
+                if len(values) == 0:
+                    print(f"Warning: {var_name} not set yet requested")
+                    return "N/A"
+
+                # Try to return the value with the given header.key_extract index (default 0)
+                else:
+                    try:
+                        return header.var_type(values[header.key_extract])
+                    except (KeyError, IndexError):
+                        raise HeaderKeyExtractError(header.key_extract, values, var_name)
 
         raise InvalidKeyExtract(header.extractor, var_name)
 
