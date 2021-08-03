@@ -1,1 +1,1 @@
-from .ConfigObj import ConfigObj, ConfigObj2
+from .ConfigObj import ConfigObj

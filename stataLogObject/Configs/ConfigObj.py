@@ -4,18 +4,18 @@ from dataclasses import dataclass, field, fields
 from typing import List, Optional
 
 
-@dataclass()
+@dataclass
 class Header:
     extractor: str
     key_extract: int = 0
     var_type: type = float
 
 
-@dataclass()
+@dataclass
 class RHS(ABC):
     obs: Header
 
-    def supporting_fields(self):
+    def field_names(self):
         """Returns the summary information"""
         return [f.name for f in fields(self)]
 
@@ -30,25 +30,52 @@ class LinearRHS(RHS):
     adj_r_sqr: Optional[Header] = None
 
 
+# TODO
 @dataclass()
-class RHSHeaders:
-    ols: LinearRHS = LinearRHS(Header('Number of obs =', var_type=int), Header("F("),
-                               Header('Prob > F ='), Header('R-squared ='),
-                               Header('Root MSE ='), Header('Adj R-squared ='))
+class LogisticRHS(RHS):
+    pass
 
 
 @dataclass
-class RightHandSupports:
-    """The right hand side of the supporting information in the log at the top of each table"""
-    obs: List = field(default_factory=lambda: ['Number', 'of', 'obs', '='])
-    f_stat: List = field(default_factory=lambda: ["F("])
-    f_prop: List = field(default_factory=lambda: ['Prob', '>', 'F', '='])
-    r_sqr: List = field(default_factory=lambda: ['R-squared', '='])
-    adj_r_sqr: List = field(default_factory=lambda: ['Adj', 'R-squared', '='])
-    within_r_sqr: List = field(default_factory=lambda: ['Within', 'R-sq.'])
-    root_mse: List = field(default_factory=lambda: ['Root', 'MSE', '='])
-    adj_clusters: List = field(default_factory=lambda: ['(Std.', 'Err.', 'adjusted', 'for'])
+class TableEntry(ABC):
+    var_name: str
+    coefficient: float
+    std_err: float
+    prob: float
+    lb_95: float
+    ub_95: float
 
+    def entry_values(self):
+        """Get all the values associated with this entry"""
+        return {f.name: getattr(self, f.name) for f in fields(self)}
+
+
+@dataclass
+class ZScore(TableEntry):
+    z_score: float
+
+
+@dataclass
+class PValue(TableEntry):
+    p_value: float
+
+
+@dataclass
+class IsolateBody:
+    skip_lines: int = 0
+    skip_indexes: List = field(default_factory=lambda: [])
+    p_value: bool = True
+
+    def format_indexes(self, table_length):
+        """We may need to subtract indexes from the bottom, in which case the index is relative to explanatory variables"""
+
+        # # TODO ???? Why is it minus 2
+        # print(table_length)
+        # for v in self.skip_indexes:
+        #     if v < 0:
+        #         print((table_length - 2) + v)
+
+        self.skip_indexes = [v if v >= 0 else (table_length - 2) + v for v in self.skip_indexes]
 
 @dataclass
 class Extractor:
@@ -68,30 +95,21 @@ class Extractor:
 
 
 @dataclass
-class TableExtractions:
-    ols: Extractor = Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9])
-    hdfe: Extractor = Extractor(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7])
-    summary: Extractor = Extractor(['Variable', '|', 'Obs', 'Mean', 'Std.', 'Dev.', 'Min', 'Max'], 0)
-    tab: Extractor = Extractor(['|', 'Freq.', 'Percent', 'Cum.'], 0, [0])
-    fe_within: Extractor = Extractor(['Fixed-effects', '(within)', 'regression', 'Number', 'of', 'obs', '='], 3, [7])
+class Table(ABC):
+    rhs: RHS
+    body_iso: IsolateBody
+    table_ext: Extractor
+    headers: List
 
 
-@dataclass
-class TableHeaders:
-    """Contains the headers of each table type"""
-    reg: List = field(
-        default_factory=lambda: ["coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"])
-    summary: List = field(default_factory=lambda: ["obs", "mean", "std_dev", "min", "max"])
-    tab: List = field(default_factory=lambda: ["frequency", "percent", "cumulative"])
-
-
-@dataclass
-class ConfigObj2:
-    """This contains configurations for extraction for each element in a log"""
-
-    right_supports: RHSHeaders = RHSHeaders()
-    isolates: TableExtractions = TableExtractions()
-    table_headers: TableHeaders = TableHeaders()
+@dataclass()
+class TableConfigs:
+    ols: Table = Table(
+        LinearRHS(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F ='), Header('R-squared ='),
+                  Header('Root MSE ='), Header('Adj R-squared =')),
+        IsolateBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
+        Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
+        ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"])
 
 
 class ConfigObj:

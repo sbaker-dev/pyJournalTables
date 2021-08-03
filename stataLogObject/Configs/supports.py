@@ -1,4 +1,3 @@
-from miscSupports import parse_as_numeric
 from string import ascii_letters
 import re
 
@@ -27,3 +26,31 @@ def extract_values(line):
             pass
 
     return values_return
+
+
+def clean_value(value):
+    """
+    Clean the value of any newline expressions and then convert it to a float
+
+    :param value: A string representation of a value from the body of the table
+    :type value: str
+
+    :return: A float representation of a value from the body of the table
+    :rtype: float
+
+    :raises ValueError: If converting to float is not possible
+    """
+    # Remove new line expressions
+    value = re.sub("\n", "", value)
+
+    # Change any numeric commas to periods
+    value = re.sub(",", "", value)
+
+    # Negative zero starting floats without a zero will not convert
+    if value[0:2] == "-.":
+        return float(f"-0.{value[2:]}")
+    else:
+        try:
+            return float(value)
+        except ValueError:
+            return str(value)
