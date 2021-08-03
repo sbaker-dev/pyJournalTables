@@ -1,7 +1,7 @@
 class HeaderKeyExtractError(Exception):
-    def __init__(self, index, extract_list):
+    def __init__(self, index, extract_list, var_name):
         super(HeaderKeyExtractError, self).__init__(
-            f"\n\tTried to extract index {index} from list {extract_list} of length {len(extract_list)}")
+            f"\n\tTried to extract index {index} from list {extract_list} of length {len(extract_list)} for {var_name}")
 
 
 class InvalidKeyExtract(Exception):
