@@ -22,6 +22,10 @@ class StataRaw:
         # Raw table that has been extracted
         self.raw_tables = [self._extract_raw_table(i) for i in self._find_start_indexes()]
 
+    def __repr__(self):
+        """Human readable output"""
+        return f"StataRaw with {len(self.raw_tables)} tables"
+
     def _find_start_indexes(self):
         """
         Find the starting indexes from the log file where the line matches the divider
