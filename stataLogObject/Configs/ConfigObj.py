@@ -1,9 +1,43 @@
+from abc import ABC
 from miscSupports import load_yaml
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from typing import List, Optional
 
 
 @dataclass()
+class Header:
+    extractor: str
+    key_extract: int = 0
+    var_type: type = float
+
+
+@dataclass()
+class RHS(ABC):
+    obs: Header
+
+    def supporting_fields(self):
+        """Returns the summary information"""
+        return [f.name for f in fields(self)]
+
+
+@dataclass
+class LinearRHS(RHS):
+    f_stat: Header
+    f_prob: Header
+    R_sqr: Header
+    r_mse: Header
+
+    adj_r_sqr: Optional[Header] = None
+
+
+@dataclass()
+class RHSHeaders:
+    ols: LinearRHS = LinearRHS(Header('Number of obs =', var_type=int), Header("F("),
+                               Header('Prob > F ='), Header('R-squared ='),
+                               Header('Root MSE ='), Header('Adj R-squared ='))
+
+
+@dataclass
 class RightHandSupports:
     """The right hand side of the supporting information in the log at the top of each table"""
     obs: List = field(default_factory=lambda: ['Number', 'of', 'obs', '='])
@@ -16,7 +50,7 @@ class RightHandSupports:
     adj_clusters: List = field(default_factory=lambda: ['(Std.', 'Err.', 'adjusted', 'for'])
 
 
-@dataclass()
+@dataclass
 class Extractor:
     """
     | Contains the information needed for extraction
@@ -33,7 +67,7 @@ class Extractor:
     skip_indexes: List = field(default_factory=lambda: [])
 
 
-@dataclass()
+@dataclass
 class TableExtractions:
     ols: Extractor = Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9])
     hdfe: Extractor = Extractor(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7])
@@ -55,7 +89,7 @@ class TableHeaders:
 class ConfigObj2:
     """This contains configurations for extraction for each element in a log"""
 
-    right_supports: RightHandSupports = RightHandSupports()
+    right_supports: RHSHeaders = RHSHeaders()
     isolates: TableExtractions = TableExtractions()
     table_headers: TableHeaders = TableHeaders()
 
