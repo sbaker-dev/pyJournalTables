@@ -17,7 +17,7 @@ class StataRaw:
 
         # Initializers
         self._log_path = log_path
-        self.iso = isolator
+        self._iso = isolator
 
         # Raw table that has been extracted
         self.raw_tables = [self._extract_raw_table(i) for i in self._find_start_indexes()]
@@ -35,7 +35,7 @@ class StataRaw:
 
     def _evaluate_start_line(self, line):
         """Evaluate if the cleaned start line, minus elements in skip_indexes, equals the divider"""
-        return [v for i, v in enumerate(clean_line(line)) if i not in self.iso.skip_indexes] == self.iso.divider
+        return [v for i, v in enumerate(clean_line(line)) if i not in self._iso.skip_indexes] == self._iso.divider
 
     def _extract_raw_table(self, index):
         """
@@ -61,11 +61,11 @@ class StataRaw:
                 cleaned = clean_line(line)
 
                 # If we find an empty line, and we have reached the limited of empty lines we are allowed to find
-                if (len(cleaned) == 0) and (spacer == self.iso.separator) and (len(current_element) > 0):
+                if (len(cleaned) == 0) and (spacer == self._iso.separator) and (len(current_element) > 0):
                     return current_element
 
                 # Otherwise if the line is empty but less than the allowed maximum, iterate the found empty upwards
-                elif len(cleaned) == 0 and spacer < self.iso.separator:
+                elif len(cleaned) == 0 and spacer < self._iso.separator:
                     spacer += 1
 
                 # If we are currently within a table then append to current_element
