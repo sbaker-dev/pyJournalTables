@@ -1,7 +1,7 @@
 from stataLogObject.Configs.ConfigObj import Extractor
+from stataLogObject.Configs.supports import clean_line
 
 from pathlib import Path
-import re
 
 
 class StataRaw:
@@ -31,7 +31,7 @@ class StataRaw:
 
     def _evaluate_start_line(self, line):
         """Evaluate if the cleaned start line, minus elements in skip_indexes, equals the divider"""
-        return [v for i, v in enumerate(self._clean_line(line)) if i not in self.iso.skip_indexes] == self.iso.divider
+        return [v for i, v in enumerate(clean_line(line)) if i not in self.iso.skip_indexes] == self.iso.divider
 
     def _extract_raw_table(self, index):
         """
@@ -54,7 +54,7 @@ class StataRaw:
 
             for index, line in enumerate(log_file):
                 # Convert the string line with regular expressions into a list of space separated items.
-                cleaned = self._clean_line(line)
+                cleaned = clean_line(line)
 
                 # If we find an empty line, and we have reached the limited of empty lines we are allowed to find
                 if (len(cleaned) == 0) and (spacer == self.iso.separator) and (len(current_element) > 0):
@@ -67,17 +67,4 @@ class StataRaw:
                 # If we are currently within a table then append to current_element
                 else:
                     current_element.append(cleaned)
-
         return current_element
-
-    # TODO Extract so that it can be used for custom classes
-    @staticmethod
-    def _clean_line(line):
-        """
-        Strip line of new line element then return, replacing negative floats without a 0, -.{value} with -0.{value}
-
-        :param line: Line in the log file
-        :type line: str
-        """
-        subbed = "".join([re.sub("\n", "", value) for value in line])
-        return [f"-0.{v[2:]}" if v[0:2] == "-." else v for v in subbed.split(" ") if len(v) > 0]
