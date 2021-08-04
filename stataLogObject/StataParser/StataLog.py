@@ -22,6 +22,7 @@ class StataLog:
         self.hdfe = self.create_tables(self.config.hdfe)
 
         self.summary = self.create_tables(self.config.summary)
+        self.tabulate = self.create_tables(self.config.tabulate)
 
     def create_tables(self, config):
         """
@@ -37,7 +38,8 @@ class StataLog:
 #
 a = StataLog(r"C:\Users\Samuel\PycharmProjects\stataLogObject\DoLogs\StataLog.log")
 
-b = a.summary[0]
+b = a.tabulate[0]
+print(b.model_fit)
 
 print(b.table_columns)
 

@@ -46,6 +46,12 @@ class TableConfigs:
         ExtractBody(Summary())
     )
 
+    tabulate: Table = Table(
+        TabMF(MFVar('Total |', 0, int)),
+        ExtractTable(['|', 'Freq.', 'Percent', 'Cum.'], 0, [0]),
+        ExtractBody(Tabulate(), 0, [-1])
+    )
+
 
 class ConfigObj:
     def __init__(self, path_to_yaml):

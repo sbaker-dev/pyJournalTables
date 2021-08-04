@@ -33,8 +33,13 @@ class LinearMF(MF):
     within_r_sqr: Optional[MFVar] = None
 
 
+@dataclass
+class TabMF(MF):
+    total: MFVar
+
+
 # TODO
-@dataclass()
+@dataclass
 class LogisticMF(MF):
     """Logistical Regression model fit parameters"""
     pass

@@ -63,6 +63,7 @@ class PValue(Entry):
 
 @dataclass
 class Summary(Entry):
+    """Summary table variant of Table Entry"""
     var_name: str = None
     obs: int = None
     mean: float = None
@@ -72,3 +73,15 @@ class Summary(Entry):
 
     def entry_type(self):
         return Summary
+
+
+@dataclass
+class Tabulate(Entry):
+    """Tabulate table variant of Table Entry"""
+    var_name: str = None
+    freq: int = None
+    percent: float = None
+    cumulative: float = None
+
+    def entry_type(self):
+        return Tabulate
