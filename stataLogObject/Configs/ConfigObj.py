@@ -8,8 +8,8 @@ from abc import ABC
 @dataclass
 class Table(ABC):
     mf: MF
-    body_iso: ExtractBody
     table_ext: ExtractTable
+    body_iso: ExtractBody
 
 
 @dataclass()
@@ -17,22 +17,23 @@ class TableConfigs:
     ols: Table = Table(
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F =', 3), MFVar('R-squared =', 3),
                  MFVar('Root MSE =', 3), MFVar('Adj R-squared =')),
-        ExtractBody(PValue(), skip_indexes=[0, 1, 2, 3, 4, 5]),
-        ExtractTable(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9])
+        ExtractTable(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
+        ExtractBody(PValue(), skip_indexes=[0, 1, 2, 3, 4, 5])
     )
 
     ols_clu: Table = Table(
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE =')),
-        ExtractBody(PValue()),
-        ExtractTable(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6])
+        ExtractTable(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
+        ExtractBody(PValue())
     )
 
     hdfe: Table = Table(
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE ='), MFVar('Adj R-squared ='), MFVar("Within R-sq. =")),
-        ExtractBody(PValue(), 1),
-        ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7])
+        ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
+        ExtractBody(PValue(), 1)
+
     )
 
     # fe_within: Table = Table(
@@ -41,8 +42,8 @@ class TableConfigs:
 
     summary: Table = Table(
         MF(),
-        ExtractBody(Summary()),
         ExtractTable(['Variable', '|', 'Obs', 'Mean', 'Std.', 'Dev.', 'Min', 'Max'], 0),
+        ExtractBody(Summary())
     )
 
 
