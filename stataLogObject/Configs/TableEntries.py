@@ -1,32 +1,61 @@
-from dataclasses import dataclass, fields
-from abc import ABC
+from stataLogObject.Supports.Errors import EntryLengthInvalid
 
-LINEAR_HEADERS = ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
+from dataclasses import dataclass, fields
+from abc import ABC, abstractmethod
 
 
 @dataclass
-class TableEntry(ABC):
-    """The entries for a given table's variable"""
-    var_name: str
-    coefficient: float
-    std_err: float
-    prob: float
-    lb_95: float
-    ub_95: float
+class Entry(ABC):
 
+    @abstractmethod
+    def entry_type(self):
+        """The Entry Type of this Sub Class"""
+
+    @property
+    def entry_names(self):
+        """Names of each field"""
+        return [f.name for f in fields(self)]
+
+    @property
     def entry_values(self):
         """Get all the values associated with this entry"""
         return {f.name: getattr(self, f.name) for f in fields(self)}
 
+    def create_entry(self, value_list):
+        """Create the given entry with the values initialised to the value_list"""
+        entry = self.entry_type()()
+        if len(value_list) != len(entry.entry_names):
+            raise EntryLengthInvalid(entry.entry_names, value_list)
+
+        [setattr(entry, n, v) for n, v in zip(entry.entry_names, value_list)]
+        return entry
+
 
 @dataclass
-class ZScore(TableEntry):
+class ZScore(Entry):
     """Z score variant of TableEntry"""
-    z_score: float
+    var_name: str = None
+    coefficient: float = None
+    std_err: float = None
+    z_score: float = None
+    prob: float = None
+    lb_95: float = None
+    ub_95: float = None
+
+    def entry_type(self):
+        return ZScore
 
 
 @dataclass
-class PValue(TableEntry):
+class PValue(Entry):
     """P value variant of Table Entry"""
-    p_value: float
+    var_name: str = None
+    coefficient: float = None
+    std_err: float = None
+    p_value: float = None
+    prob: float = None
+    lb_95: float = None
+    ub_95: float = None
 
+    def entry_type(self):
+        return PValue
