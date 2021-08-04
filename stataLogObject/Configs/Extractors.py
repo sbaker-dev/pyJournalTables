@@ -1,13 +1,14 @@
+from stataLogObject.Configs.TableEntries import Entry
 from dataclasses import dataclass, field
 from typing import List
 
 
-# TODO: Make Generalised Extact given common elements of separator and skip indexes?
+# TODO: Make Generalised Extract given common elements of separator/Skip lines and skip indexes?
 @dataclass
 class ExtractBody:
+    body_type: Entry
     skip_lines: int = 0
     skip_indexes: List = field(default_factory=lambda: [])
-    p_value: bool = True
 
     def format_indexes(self, table_length):
         """We may need to subtract indexes from the bottom, in which case the index is relative to explanatory variables"""
