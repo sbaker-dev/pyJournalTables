@@ -6,4 +6,12 @@ class HeaderKeyExtractError(Exception):
 
 class InvalidKeyExtract(Exception):
     def __init__(self, key, var_name):
-        super(InvalidKeyExtract, self).__init__(f"\n\tFailed to find {key} for {var_name}")
+        super(InvalidKeyExtract, self).__init__(
+            f"\n\tFailed to find {key} for {var_name}")
+
+
+class EntryLengthInvalid(Exception):
+    def __init__(self, field_names, values):
+        super(EntryLengthInvalid, self).__init__(
+            f"\n\tLength of extracted {len(values)} lines is {values} but {len(field_names)} exist:"
+            f"\n\t{field_names}")
