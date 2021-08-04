@@ -14,7 +14,6 @@ class MFVar:
 @dataclass
 class MF(ABC):
     """Model Fit base class"""
-    obs: MFVar
 
     def field_names(self):
         """Returns the summary information"""
@@ -24,6 +23,7 @@ class MF(ABC):
 @dataclass
 class LinearMF(MF):
     """Linear Regression model fit parameters"""
+    obs: MFVar
     f_stat: MFVar
     f_prob: MFVar
     R_sqr: MFVar
