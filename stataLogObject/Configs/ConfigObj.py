@@ -2,7 +2,6 @@ from stataLogObject.Configs import *
 
 from miscSupports import load_yaml
 from dataclasses import dataclass
-from typing import List
 from abc import ABC
 
 
@@ -11,35 +10,29 @@ class Table(ABC):
     mf: MF
     body_iso: ExtractBody
     table_ext: ExtractTable
-    headers: List
 
 
 @dataclass()
 class TableConfigs:
     ols: Table = Table(
-        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F =', 3),
-                 MFVar('R-squared =', 3), MFVar('Root MSE =', 3), MFVar('Adj R-squared =')),
-        ExtractBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
-        ExtractTable(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
-        LINEAR_HEADERS
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F =', 3), MFVar('R-squared =', 3),
+                 MFVar('Root MSE =', 3), MFVar('Adj R-squared =')),
+        ExtractBody(PValue(), skip_indexes=[0, 1, 2, 3, 4, 5]),
+        ExtractTable(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9])
     )
 
     ols_clu: Table = Table(
-        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='),
-                 MFVar('R-squared ='),
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE =')),
-        ExtractBody(),
-        ExtractTable(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
-        LINEAR_HEADERS
+        ExtractBody(PValue()),
+        ExtractTable(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6])
     )
 
     hdfe: Table = Table(
-        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='),
-                 MFVar('R-squared ='),
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE ='), MFVar('Adj R-squared ='), MFVar("Within R-sq. =")),
-        ExtractBody(1),
-        ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
-        LINEAR_HEADERS
+        ExtractBody(PValue(), 1),
+        ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7])
     )
 
 
