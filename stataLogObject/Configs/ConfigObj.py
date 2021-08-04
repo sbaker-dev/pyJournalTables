@@ -36,9 +36,15 @@ class TableConfigs:
 
     )
 
-    # fe_within: Table = Table(
-    #
-    # )
+    fe_within: Table = Table(
+        PanelMF(MFVar('Number of obs =', var_type=int), MFVar('Number of groups =', var_type=int),
+                MFVar('min =', 1, int), MFVar('avg =', 1, float), MFVar('max =', 1, int), MFVar("F("),
+                MFVar('Prob > F =', 1), MFVar('within ='), MFVar('between ='), MFVar('overall ='), MFVar('sigma_u |'),
+                MFVar('sigma_e |'), MFVar('rho |')),
+        ExtractTable(['Fixed-effects', '(within)', 'regression', 'Number', 'of', 'obs', '='], 3, [7]),
+        ExtractBody(PValue(), 0)
+
+    )
 
     summary: Table = Table(
         MF(),

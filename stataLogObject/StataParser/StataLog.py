@@ -21,6 +21,14 @@ class StataLog:
         self.ols_clu = self.create_tables(self.config.ols_clu)
         self.hdfe = self.create_tables(self.config.hdfe)
 
+        # Panel variables
+        self.fe_within = self.create_tables(self.config.fe_within)
+        # TODO: Random-effects
+
+        # Mixed
+        # TODO:
+
+        # Summary
         self.summary = self.create_tables(self.config.summary)
         self.tabulate = self.create_tables(self.config.tabulate)
 
@@ -38,9 +46,10 @@ class StataLog:
 #
 a = StataLog(r"C:\Users\Samuel\PycharmProjects\stataLogObject\DoLogs\StataLog.log")
 
-b = a.tabulate[0]
-print(b.model_fit)
 
+b = a.fe_within[0]
+print(b.model_fit)
+print(b.body_values)
 print(b.table_columns)
 
 def forest_plot(table, exclusions=None):
