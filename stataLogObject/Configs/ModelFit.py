@@ -1,14 +1,75 @@
-from dataclasses import dataclass, fields
-from typing import Optional
-from abc import ABC
+from stataLogObject.Supports.Errors import HeaderKeyExtractError, InvalidKeyExtract
+from stataLogObject.Supports.supports import extract_values
+
+from dataclasses import dataclass, fields, field
+from typing import Optional, List
+from abc import ABC, abstractmethod
 
 
 @dataclass
-class MFVar:
-    """Extracting information for a given model fit variable"""
+class VarField:
     extractor: str
-    key_extract: int = 0
     var_type: type = float
+
+    def find_mf(self, lines_list, var_name):
+        """Find the model fit parameter in the lines list"""
+        for i, line in enumerate(lines_list):
+            if self.extractor in " ".join(line):
+                return self._extract_mf(i, lines_list, var_name)
+
+        raise InvalidKeyExtract(self.extractor, var_name)
+
+    @abstractmethod
+    def _extract_mf(self, index, lines_list, var_name):
+        """Extract the model fit parameter(s) from the raw table"""
+
+    @abstractmethod
+    def _extract_var(self, values_list, var_name):
+        """Extract the variable(s) from the list of values for a given variable"""
+
+
+@dataclass
+class MFVar(VarField):
+    """Extracting information for a given model fit variable"""
+    key_extract: int = 0
+
+    def _extract_mf(self, index, lines_list, var_name):
+        values = extract_values(" ".join(lines_list[index]))
+
+        if len(values) == 0:
+            print(f"Warning: {var_name} not set yet requested")
+            return "N/A"
+        else:
+            return self._extract_var(values, var_name)
+
+    def _extract_var(self, values_list, var_name):
+        try:
+            return self.var_type(values_list[self.key_extract])
+        except (KeyError, IndexError):
+            raise HeaderKeyExtractError(self.key_extract, values_list, var_name)
+
+
+@dataclass
+class REVar(VarField):
+    """Random effects parameters"""
+    key_extract: List = field(default_factory=lambda: [0])
+    re_headers: List = field(default_factory=lambda: ["Est", "Std Err", "LB_95", "UB_95"])
+
+    def _extract_mf(self, index, lines_list, var_name):
+        return [self._extract_var(line, var_name) for i, line in enumerate(lines_list) if i > index and ("|" in line)]
+
+    def _extract_var(self, values_list, var_name):
+
+        values = extract_values(" ".join(values_list), False)
+        if len(values) == 0:
+            print(f"Warning: {var_name} not set yet requested")
+            return "N/A"
+
+        # For each key in RE return the header-value of the random effects parameters
+        try:
+            return {h: self.var_type(values[i]) for h, i in zip(self.re_headers, self.key_extract)}
+        except (KeyError, IndexError):
+            raise HeaderKeyExtractError(self.key_extract, values, var_name)
 
 
 @dataclass
@@ -53,6 +114,19 @@ class PanelMF(MF):
     sigma_u: MFVar
     sigma_e: MFVar
     rho: MFVar
+
+
+@dataclass
+class MixedMF(MF):
+    obs: MFVar
+    groups: MFVar
+    obs_group_min: MFVar
+    obs_group_avg: MFVar
+    obs_group_max: MFVar
+    wald: MFVar
+    chi2_prob: MFVar
+    log_like: MFVar
+    re_params: REVar
 
 
 # TODO

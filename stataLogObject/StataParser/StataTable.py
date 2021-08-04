@@ -26,7 +26,8 @@ class StataTable:
 
         # Set the supporting table header values
         self.model_fit_names = self.config.mf.field_names()
-        [setattr(self, f, self.set_mf_value(getattr(self.config.mf, f), f)) for f in self.model_fit_names]
+
+        [setattr(self, f, self._set_mf(f)) for f in self.model_fit_names]
         self.model_fit = {f: getattr(self, f) for f in self.model_fit_names if getattr(self, f) is not None}
 
         # Extract phenotype, variable names, and the table body in row form
@@ -37,47 +38,12 @@ class StataTable:
         [setattr(self, f"tb_{field}", [getattr(v, field) for v in self.body_values])for field in self.table_col_names]
         self.table_columns = {field: getattr(self, f"tb_{field}") for field in self.table_col_names}
 
-    def set_mf_value(self, mf_var, var_name):
-        """
-        Set a given model fit value
-
-        :param mf_var: The model fit variables attributes to use to isolate this model fit variable
-        :type mf_var: MFVar | None
-
-        :param var_name: The name of this header for Error Handling
-        :type var_name: str
-
-        :return: The numeric values of the header supporting values
-        :rtype: float | int
-
-        :raises HeaderKeyExtractError InvalidKeyExtract: If the header.key_extract leads to a KeyError and No line found
-            for header.extractor respectively
-        """
-
-        # Some Headers are optional, return None if this occurs
-        if not mf_var:
+    def _set_mf(self, f):
+        """Set a given model fit parameter if it has been set, else return None as this variable was optional"""
+        if not getattr(self.config.mf, f):
             return None
-
-        for line in self._raw:
-
-            line_str = " ".join(line)
-            if mf_var.extractor in line_str:
-                values = extract_values(line_str)
-
-                # Some variables may be found, but not set. For example F stat when very small sample. Warn user when
-                # this happens as it could also be due to an issue of extraction
-                if len(values) == 0:
-                    print(f"Warning: {var_name} not set yet requested")
-                    return "N/A"
-
-                # Try to return the value with the given header.key_extract index (default 0)
-                else:
-                    try:
-                        return mf_var.var_type(values[mf_var.key_extract])
-                    except (KeyError, IndexError):
-                        raise HeaderKeyExtractError(mf_var.key_extract, values, var_name)
-
-        raise InvalidKeyExtract(mf_var.extractor, var_name)
+        else:
+            return getattr(self.config.mf, f).find_mf(self._raw, f)
 
     def _extract_body(self):
         """
