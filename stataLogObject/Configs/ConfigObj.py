@@ -33,6 +33,7 @@ class LinearMF(MF):
     r_mse: Header
 
     adj_r_sqr: Optional[Header] = None
+    within_r_sqr: Optional[Header] = None
 
 
 # TODO
@@ -124,6 +125,14 @@ class TableConfigs:
                  Header('Root MSE =')),
         IsolateBody(),
         Extractor(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
+        LINEAR_HEADERS
+    )
+
+    hdfe: Table = Table(
+        LinearMF(Header('Number of obs =', var_type=int), Header("F(", 2), Header('Prob > F ='), Header('R-squared ='),
+                 Header('Root MSE ='), Header('Adj R-squared ='), Header("Within R-sq. =")),
+        IsolateBody(1),
+        Extractor(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
         LINEAR_HEADERS
     )
 
