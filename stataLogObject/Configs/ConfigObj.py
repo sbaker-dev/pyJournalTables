@@ -32,7 +32,7 @@ class TableConfigs:
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", key_extract=2), MFVar('Prob > F ='),
                  MFVar('R-squared ='), MFVar('Root MSE ='), MFVar('Adj R-squared ='), MFVar("Within R-sq. =")),
         ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
-        ExtractBody(PValue(), 1)
+        ExtractBody(PValue())
 
     )
 
@@ -42,7 +42,7 @@ class TableConfigs:
                 MFVar('Prob > F =', key_extract=1), MFVar('within ='), MFVar('between ='), MFVar('overall ='),
                 MFVar('sigma_u |'), MFVar('sigma_e |'), MFVar('rho |')),
         ExtractTable(['Fixed-effects', '(within)', 'regression', 'Number', 'of', 'obs', '='], 3, [7]),
-        ExtractBody(PValue(), 0)
+        ExtractBody(PValue())
 
     )
 
