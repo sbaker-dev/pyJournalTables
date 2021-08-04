@@ -25,12 +25,17 @@ class StataTable:
         self.iso.format_indexes(len(self._raw))
 
         # Set the supporting table header values
-        [setattr(self, f, self.set_mf_value(getattr(self.config.mf, f), f)) for f in self.config.mf.field_names()]
-        self.model_fit = {f: getattr(self, f) for f in self.config.mf.field_names() if getattr(self, f) is not None}
+        self.model_fit_names = self.config.mf.field_names()
+        [setattr(self, f, self.set_mf_value(getattr(self.config.mf, f), f)) for f in self.model_fit_names]
+        self.model_fit = {f: getattr(self, f) for f in self.model_fit_names if getattr(self, f) is not None}
 
         # Extract phenotype, variable names, and the table body in row form
         self.table_col_names = self.iso.body_type.entry_names
         self.phenotype, self.body_values = self._extract_body()
+
+        # Set the column data format
+        [setattr(self, f"tb_{field}", [getattr(v, field) for v in self.body_values])for field in self.table_col_names]
+        self.table_columns = {field: getattr(self, f"tb_{field}") for field in self.table_col_names}
 
     def set_mf_value(self, mf_var, var_name):
         """
@@ -146,41 +151,3 @@ class StataTable:
         values = line[-(len(self.table_col_names) - 1):]
         var_name = "_".join(line[:-(len(self.table_col_names) - 1)])
         return [var_name] + values
-
-    @property
-    def var_names(self):
-        """Variable names"""
-        return [b.var_name for b in self.body_values]
-
-    @property
-    def coefficients(self):
-        """The coefficients"""
-        return [b.coefficient for b in self.body_values]
-
-    @property
-    def std_errors(self):
-        """The standard error"""
-        return [b.std_err for b in self.body_values]
-
-    @property
-    def probability(self):
-        """The two tailed probability relative to P values or Z scores"""
-        return [b.prob for b in self.body_values]
-
-    @property
-    def lb_95(self):
-        """95% Confidence internal lower bound"""
-        return [b.lb_95 for b in self.body_values]
-
-    @property
-    def ub_95(self):
-        """95% Confidence internal upper bound"""
-        return [b.ub_95 for b in self.body_values]
-
-    @property
-    def p_z_value(self):
-        """The p stat or z score depending on the table"""
-        if self.config.body_iso.p_value:
-            return [b.entry_values()['p_value'] for b in self.body_values]
-        else:
-            return [b.entry_values()['z_score'] for b in self.body_values]
