@@ -1,105 +1,9 @@
-from abc import ABC
+from stataLogObject.Configs import *
+
 from miscSupports import load_yaml
-from dataclasses import dataclass, field, fields
-from typing import List, Optional
-
-
-LINEAR_HEADERS = ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
-
-
-@dataclass
-class MFVar:
-    extractor: str
-    key_extract: int = 0
-    var_type: type = float
-
-
-@dataclass
-class MF(ABC):
-    """Model Fit base class"""
-    obs: MFVar
-
-    def field_names(self):
-        """Returns the summary information"""
-        return [f.name for f in fields(self)]
-
-
-@dataclass
-class LinearMF(MF):
-    """Linear Regression model fit parameters"""
-    f_stat: MFVar
-    f_prob: MFVar
-    R_sqr: MFVar
-    r_mse: MFVar
-
-    adj_r_sqr: Optional[MFVar] = None
-    within_r_sqr: Optional[MFVar] = None
-
-
-# TODO
-@dataclass()
-class LogisticMF(MF):
-    """Logistical Regression model fit parameters"""
-    pass
-
-
-@dataclass
-class TableEntry(ABC):
-    var_name: str
-    coefficient: float
-    std_err: float
-    prob: float
-    lb_95: float
-    ub_95: float
-
-    def entry_values(self):
-        """Get all the values associated with this entry"""
-        return {f.name: getattr(self, f.name) for f in fields(self)}
-
-
-@dataclass
-class ZScore(TableEntry):
-    z_score: float
-
-
-@dataclass
-class PValue(TableEntry):
-    p_value: float
-
-
-@dataclass
-class ExtractBody:
-    skip_lines: int = 0
-    skip_indexes: List = field(default_factory=lambda: [])
-    p_value: bool = True
-
-    def format_indexes(self, table_length):
-        """We may need to subtract indexes from the bottom, in which case the index is relative to explanatory variables"""
-
-        # # TODO ???? Why is it minus 2
-        # print(table_length)
-        # for v in self.skip_indexes:
-        #     if v < 0:
-        #         print((table_length - 2) + v)
-
-        self.skip_indexes = [v if v >= 0 else (table_length - 2) + v for v in self.skip_indexes]
-
-
-@dataclass
-class ExtractTable:
-    """
-    | Contains the information needed for extraction
-    |
-    | *Attributes*:
-    |    **divider (list)**: The divider to isolate the elements
-    |    **separator (int)**: The number of spaces allowed before the table is considered finished and is saved
-    |    **skip_indexes** (Optional[list]):  Option list of elements found in the log needs to have certain elements
-    |   skipped
-
-    """
-    divider: List
-    separator: int
-    skip_indexes: List = field(default_factory=lambda: [])
+from dataclasses import dataclass
+from typing import List
+from abc import ABC
 
 
 @dataclass
@@ -121,7 +25,8 @@ class TableConfigs:
     )
 
     ols_clu: Table = Table(
-        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='), MFVar('R-squared ='),
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='),
+                 MFVar('R-squared ='),
                  MFVar('Root MSE =')),
         ExtractBody(),
         ExtractTable(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
@@ -129,7 +34,8 @@ class TableConfigs:
     )
 
     hdfe: Table = Table(
-        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='), MFVar('R-squared ='),
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='),
+                 MFVar('R-squared ='),
                  MFVar('Root MSE ='), MFVar('Adj R-squared ='), MFVar("Within R-sq. =")),
         ExtractBody(1),
         ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
