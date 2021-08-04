@@ -1,6 +1,5 @@
-from stataLogObject.Configs.ConfigObj import TableConfigs, Table
-from stataLogObject.StataParser import StataRaw
-from stataLogObject.StataParser.StataTable import StataTable
+from stataLogObject.StataParser import StataRaw, StataTable
+from stataLogObject.Configs import TableConfigs, Table
 
 from pathlib import Path
 

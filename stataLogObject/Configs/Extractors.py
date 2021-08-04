@@ -1,4 +1,4 @@
-from stataLogObject.Configs.TableEntries import Entry
+from stataLogObject.Configs import Entry
 from dataclasses import dataclass, field
 from typing import List
 

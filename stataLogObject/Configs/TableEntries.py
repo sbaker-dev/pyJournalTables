@@ -1,4 +1,4 @@
-from stataLogObject.Supports.Errors import EntryLengthInvalid
+from stataLogObject.Supports import EntryLengthInvalid
 
 from dataclasses import dataclass, fields
 from abc import ABC, abstractmethod
