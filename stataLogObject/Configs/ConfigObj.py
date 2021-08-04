@@ -112,16 +112,16 @@ class Table(ABC):
 @dataclass()
 class TableConfigs:
     ols: Table = Table(
-        LinearRHS(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F ='), Header('R-squared ='),
-                  Header('Root MSE ='), Header('Adj R-squared =')),
+        LinearMF(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F =', 3),
+                 Header('R-squared =', 3), Header('Root MSE =', 3), Header('Adj R-squared =')),
         IsolateBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
         Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
         LINEAR_HEADERS
     )
 
     ols_clu: Table = Table(
-        LinearRHS(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F ='), Header('R-squared ='),
-                  Header('Root MSE =')),
+        LinearMF(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F ='), Header('R-squared ='),
+                 Header('Root MSE =')),
         IsolateBody(),
         Extractor(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
         LINEAR_HEADERS
