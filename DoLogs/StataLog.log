@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:
   log type:  text
- opened on:   3 Aug 2021, 10:13:53
+ opened on:   4 Aug 2021, 15:18:39
 
 . * Basic regression
 . reg drate medage marriage i.region
@@ -55,35 +55,95 @@ Linear regression                               Number of obs     =         50
 ------------------------------------------------------------------------------
 
 . 
-. * Summary table
-. sum drate medage marriage region i.region
-
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
--------------+---------------------------------------------------------
-       drate |         50        84.3    13.07318         40        107
-      medage |         50       29.54    1.693445       24.2       34.7
-    marriage |         50     47701.4    45130.42       4437     210864
-      region |         50        2.66    1.061574          1          4
--------------+---------------------------------------------------------
-             |
-      region |
-    N Cntrl  |         50         .24    .4314191          0          1
-      South  |         50         .32    .4712121          0          1
-       West  |         50         .26    .4430875          0          1
+. * Panel setup
+. xtset region
+       panel variable:  region (unbalanced)
 
 . 
-. * Tab table
-. tab region
+. * Panel Fixed effects
+. xtreg drate medage marriage, fe
 
-     Census |
-     region |      Freq.     Percent        Cum.
-------------+-----------------------------------
-         NE |          9       18.00       18.00
-    N Cntrl |         12       24.00       42.00
-      South |         16       32.00       74.00
-       West |         13       26.00      100.00
-------------+-----------------------------------
-      Total |         50      100.00
+Fixed-effects (within) regression               Number of obs     =         50
+Group variable: region                          Number of groups  =          4
+
+R-sq:                                           Obs per group:
+     within  = 0.4168                                         min =          9
+     between = 0.7599                                         avg =       12.5
+     overall = 0.5333                                         max =         16
+
+                                                F(2,44)           =      15.72
+corr(u_i, Xb)  = 0.3849                         Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+       drate |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      medage |   4.334293   .7920065     5.47   0.000     2.738109    5.930477
+    marriage |  -.0000158   .0000245    -0.65   0.522    -.0000652    .0000336
+       _cons |  -42.98136   23.06115    -1.86   0.069    -89.45804    3.495325
+-------------+----------------------------------------------------------------
+     sigma_u |  6.9045102
+     sigma_e |  7.2568603
+         rho |  .47513432   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(3, 44) = 10.07                      Prob > F = 0.0000
+
+. 
+. * Panel Fixed effects with clustering
+. xtreg drate medage marriage, fe cluster(region)
+
+Fixed-effects (within) regression               Number of obs     =         50
+Group variable: region                          Number of groups  =          4
+
+R-sq:                                           Obs per group:
+     within  = 0.4168                                         min =          9
+     between = 0.7599                                         avg =       12.5
+     overall = 0.5333                                         max =         16
+
+                                                F(2,3)            =      26.71
+corr(u_i, Xb)  = 0.3849                         Prob > F          =     0.0123
+
+                                 (Std. Err. adjusted for 4 clusters in region)
+------------------------------------------------------------------------------
+             |               Robust
+       drate |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      medage |   4.334293   .6783996     6.39   0.008     2.175323    6.493263
+    marriage |  -.0000158   .0000201    -0.79   0.489    -.0000798    .0000482
+       _cons |  -42.98136     20.432    -2.10   0.126    -108.0051    22.04238
+-------------+----------------------------------------------------------------
+     sigma_u |  6.9045102
+     sigma_e |  7.2568603
+         rho |  .47513432   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. 
+. * Panel Random effects with clustering
+. xtreg drate medage marriage, cluster(region)
+
+Random-effects GLS regression                   Number of obs     =         50
+Group variable: region                          Number of groups  =          4
+
+R-sq:                                           Obs per group:
+     within  = 0.4168                                         min =          9
+     between = 0.7596                                         avg =       12.5
+     overall = 0.5333                                         max =         16
+
+                                                Wald chi2(2)      =      47.59
+corr(u_i, X)   = 0 (assumed)                    Prob > chi2       =     0.0000
+
+                                 (Std. Err. adjusted for 4 clusters in region)
+------------------------------------------------------------------------------
+             |               Robust
+       drate |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      medage |   4.615605   .8346516     5.53   0.000     2.979717    6.251492
+    marriage |  -.0000172   .0000175    -0.99   0.323    -.0000514     .000017
+       _cons |  -51.25925    27.9802    -1.83   0.067    -106.0994    3.580928
+-------------+----------------------------------------------------------------
+     sigma_u |  5.1708591
+     sigma_e |  7.2568603
+         rho |  .33674873   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
 
 . 
 . * Reghdfe with absorbed degrees of freedom
@@ -144,9 +204,147 @@ Absorbed degrees of freedom:
 -----------------------------------------------------+
 * = FE nested within cluster; treated as redundant for DoF computation
 
+. 
+. * Mixed 
+. mixed drate medage marriage || region: medage marriage
+
+Performing EM optimization: 
+
+Performing gradient-based optimization: 
+
+Iteration 0:   log likelihood = -173.40592  
+Iteration 1:   log likelihood = -173.23982  
+Iteration 2:   log likelihood = -173.22223  
+Iteration 3:   log likelihood = -173.22188  
+Iteration 4:   log likelihood = -173.22188  
+
+Computing standard errors:
+
+Mixed-effects ML regression                     Number of obs     =         50
+Group variable: region                          Number of groups  =          4
+
+                                                Obs per group:
+                                                              min =          9
+                                                              avg =       12.5
+                                                              max =         16
+
+                                                Wald chi2(2)      =      39.20
+Log likelihood = -173.22188                     Prob > chi2       =     0.0000
+
+------------------------------------------------------------------------------
+       drate |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      medage |   4.579637   .7480099     6.12   0.000     3.113565     6.04571
+    marriage |  -.0000171   .0000239    -0.71   0.475    -.0000639    .0000297
+       _cons |  -50.20012   22.03921    -2.28   0.023    -93.39617   -7.004074
+------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+  Random-effects Parameters  |   Estimate   Std. Err.     [95% Conf. Interval]
+-----------------------------+------------------------------------------------
+region: Independent          |
+                 var(medage) |   3.13e-15          .             .           .
+               var(marriage) |   6.31e-26          .             .           .
+                  var(_cons) |   30.34697          .             .           .
+-----------------------------+------------------------------------------------
+               var(Residual) |   50.44545          .             .           .
+------------------------------------------------------------------------------
+LR test vs. linear model: chi2(3) = 13.39                 Prob > chi2 = 0.0039
+
+Note: LR test is conservative and provided only for reference.
+
+. 
+. * Generate a binary variable for probit / logit
+. gen regionN = region
+
+. gen north = 0
+
+. replace north = 1 if regionN == 1
+(9 real changes made)
+
+. replace north = 2 if regionN == 1
+(9 real changes made)
+
+. 
+. * Probit
+. probit north drate
+
+Iteration 0:   log likelihood = -23.569674  
+Iteration 1:   log likelihood = -19.856505  
+Iteration 2:   log likelihood = -19.568818  
+Iteration 3:   log likelihood = -19.568069  
+Iteration 4:   log likelihood = -19.568069  
+
+Probit regression                               Number of obs     =         50
+                                                LR chi2(1)        =       8.00
+                                                Prob > chi2       =     0.0047
+Log likelihood = -19.568069                     Pseudo R2         =     0.1698
+
+------------------------------------------------------------------------------
+       north |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       drate |   .0681298   .0286878     2.37   0.018     .0119027    .1243569
+       _cons |  -6.943951   2.607986    -2.66   0.008    -12.05551   -1.832392
+------------------------------------------------------------------------------
+
+. 
+. * Logit
+. logit north drate
+
+Iteration 0:   log likelihood = -23.569674  
+Iteration 1:   log likelihood = -20.227453  
+Iteration 2:   log likelihood = -19.667032  
+Iteration 3:   log likelihood = -19.659977  
+Iteration 4:   log likelihood =  -19.65997  
+Iteration 5:   log likelihood =  -19.65997  
+
+Logistic regression                             Number of obs     =         50
+                                                LR chi2(1)        =       7.82
+                                                Prob > chi2       =     0.0052
+Log likelihood =  -19.65997                     Pseudo R2         =     0.1659
+
+------------------------------------------------------------------------------
+       north |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       drate |   .1187965    .051677     2.30   0.022     .0175115    .2200816
+       _cons |  -12.06384   4.750289    -2.54   0.011    -21.37424   -2.753448
+------------------------------------------------------------------------------
+
+. 
+. * Summary table
+. sum drate medage marriage region i.region
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+       drate |         50        84.3    13.07318         40        107
+      medage |         50       29.54    1.693445       24.2       34.7
+    marriage |         50     47701.4    45130.42       4437     210864
+      region |         50        2.66    1.061574          1          4
+-------------+---------------------------------------------------------
+             |
+      region |
+    N Cntrl  |         50         .24    .4314191          0          1
+      South  |         50         .32    .4712121          0          1
+       West  |         50         .26    .4430875          0          1
+
+. 
+. * Tab table
+. tab region
+
+     Census |
+     region |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         NE |          9       18.00       18.00
+    N Cntrl |         12       24.00       42.00
+      South |         16       32.00       74.00
+       West |         13       26.00      100.00
+------------+-----------------------------------
+      Total |         50      100.00
+
+. 
 . log close
       name:  <unnamed>
        log:
   log type:  text
- closed on:   3 Aug 2021, 10:13:53
+ closed on:   4 Aug 2021, 15:18:43
 --------------------------------------------------------------------------------------------------------------------------------------------------------
