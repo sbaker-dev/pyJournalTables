@@ -121,6 +121,10 @@ class StataTable:
                 values_stripped = [value for value in line if value != "|"]
                 if len(values_stripped) > 1:
                     body_lines.append(values_stripped)
+
+                    # Most tables end with _cons so we can stop after this point
+                    if values_stripped[0] == "_cons":
+                        break
         return body_lines
 
     def _create_table_entries(self, body_lines):
