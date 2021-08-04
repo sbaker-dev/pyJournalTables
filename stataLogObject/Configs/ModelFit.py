@@ -26,7 +26,7 @@ class LinearMF(MF):
     obs: MFVar
     f_stat: MFVar
     f_prob: MFVar
-    R_sqr: MFVar
+    r_sqr: MFVar
     r_mse: MFVar
 
     adj_r_sqr: Optional[MFVar] = None
@@ -36,6 +36,23 @@ class LinearMF(MF):
 @dataclass
 class TabMF(MF):
     total: MFVar
+
+
+@dataclass
+class PanelMF(MF):
+    obs: MFVar
+    groups: MFVar
+    obs_group_min: MFVar
+    obs_group_avg: MFVar
+    obs_group_max: MFVar
+    f_stat: MFVar
+    f_prob: MFVar
+    r_sqr_within: MFVar
+    r_sqr_between: MFVar
+    r_sqr_overall: MFVar
+    sigma_u: MFVar
+    sigma_e: MFVar
+    rho: MFVar
 
 
 # TODO
