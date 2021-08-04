@@ -62,3 +62,17 @@ def clean_value(value):
             return float(value)
         except ValueError:
             return str(value)
+
+
+def methods_in_line(var_name, cf, lb, ub, rd=2):
+    """
+    Construct an in line methods line from a forest plot formatted line
+
+    :param var_name: var name
+    :param cf: coefficient
+    :param lb: lower bound
+    :param ub: upper bound
+    :param rd: How many decimal places you want to round to
+    :return: A string representation of this line
+    """
+    return f"{var_name}\t(RD={round(float(cf), rd)}, 95%CI: {round(float(lb), rd)}; {round(float(ub), rd)})\n"

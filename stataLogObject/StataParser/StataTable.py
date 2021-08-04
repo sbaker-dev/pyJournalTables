@@ -1,7 +1,7 @@
-from stataLogObject.Supports import ForestPlotInvalidAttributes, FOREST_DICT
+from stataLogObject.Supports import ForestPlotInvalidAttributes, FOREST_DICT, methods_in_line
 from stataLogObject.Configs import Table
 
-from miscSupports import flip_list
+from miscSupports import flip_list, write_markdown
 from csvObject import write_csv
 
 
@@ -70,4 +70,25 @@ class StataTable:
         else:
             return [i for i, var in enumerate(self.table_columns['var_name']) if var not in exclusions]
 
+    def in_line_methods_forest(self, rd=2, exclusions=None, md_path=None):
+        """
+        Create in lines methods equivalents for each variable in the style of forest
 
+        :param rd: The amount of rounding to apply, defaults to 2
+        :type rd: int
+
+        :param exclusions: An optional list of var names to exclude
+        :type exclusions: list[str] | None
+
+        :param md_path: If set will create a file called 'methods' in this directory with this information
+        :type md_path: str | Path
+
+        :return: A list of strings of type 'VarName\t( RD=round(cf, rd), 95%CI: round(lb, rd); round(ub, rd) )\n'
+        """
+
+        rows = [methods_in_line(var_name, cf, lb, ub, rd) for var_name, cf, lb, ub in self.forest_format(exclusions)]
+        if md_path is None:
+            return rows
+        else:
+            write_markdown(md_path, "methods", rows)
+            return rows
