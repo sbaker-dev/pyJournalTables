@@ -1,5 +1,5 @@
 from stataLogObject.Configs.ConfigObj import ExtractTable
-from stataLogObject.Configs.supports import clean_line
+from stataLogObject.Supports.supports import clean_line
 
 from pathlib import Path
 

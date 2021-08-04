@@ -1,6 +1,6 @@
 from stataLogObject.Configs.ConfigObj import MFVar, PValue, ZScore, TableEntry, Table
-from stataLogObject.Configs.supports import extract_values, clean_value
-from stataLogObject.Configs.Errors import HeaderKeyExtractError, InvalidKeyExtract
+from stataLogObject.Supports.supports import extract_values, clean_value
+from stataLogObject.Supports.Errors import HeaderKeyExtractError, InvalidKeyExtract
 
 
 class StataTable:
