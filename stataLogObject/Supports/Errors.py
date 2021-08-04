@@ -15,3 +15,9 @@ class EntryLengthInvalid(Exception):
         super(EntryLengthInvalid, self).__init__(
             f"\n\tLength of extracted {len(values)} lines is {values} but {len(field_names)} exist:"
             f"\n\t{field_names}")
+
+
+class ForestPlotInvalidAttributes(Exception):
+    def __init__(self, column_attributes, forest_columns):
+        super(ForestPlotInvalidAttributes, self).__init__(
+            f"\n\tFailed to find all of {forest_columns} in {column_attributes}")

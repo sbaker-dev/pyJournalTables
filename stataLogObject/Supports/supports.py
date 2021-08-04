@@ -2,6 +2,11 @@ from string import ascii_letters
 import re
 
 
+forest_attr = ['var_name', 'coefficient', 'lb_95', 'ub_95']
+forest_header = ["Phenotype", "Coefficient", "Lower Bound", "Upper Bound"]
+FOREST_DICT = {attr: header for attr, header in zip(forest_attr, forest_header)}
+
+
 def clean_line(line):
     """
     Strip line of new line element then return, replacing negative floats without a 0, -.{value} with -0.{value}

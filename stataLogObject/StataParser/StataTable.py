@@ -1,4 +1,5 @@
-from stataLogObject.Configs.ConfigObj import Table
+from stataLogObject.Supports import ForestPlotInvalidAttributes, FOREST_DICT
+from stataLogObject.Configs import Table
 
 from miscSupports import flip_list
 from csvObject import write_csv
@@ -45,3 +46,28 @@ class StataTable:
     def body_to_csv(self, write_directory, write_name):
         """Write the body as a csv to the write directory called 'write_name'.csv"""
         write_csv(write_directory, write_name, list(self.table_columns.keys()), flip_list(self.table_columns.values()))
+
+    def forest_format(self, exclusions=None):
+        """Format the data as a forest plot would require, specifically designed for pyBlendFigures Forest"""
+        if sum([1 if h in self.table_columns.keys() else 0 for h in FOREST_DICT.keys()]) != len(FOREST_DICT.keys()):
+            raise ForestPlotInvalidAttributes(list(self.table_columns.keys()), FOREST_DICT.keys())
+
+        rows_list = flip_list([self.table_columns[key] for key in FOREST_DICT.keys()])
+        return [rows_list[i] for i in self._index_forest(exclusions)]
+
+    def _index_forest(self, exclusions):
+        """
+        If we want to exclude variables, like _cons for example, then we want to remove these indexes from the isolate
+
+        :param exclusions: An optional list of var names to exclude
+        :type exclusions: list[str] | None
+
+        :return: A list of indexes to isolate rows within
+        :rtype: list[int]
+        """
+        if exclusions is None:
+            return [i for i in range(len(self.table_columns['var_name']))]
+        else:
+            return [i for i, var in enumerate(self.table_columns['var_name']) if var not in exclusions]
+
+
