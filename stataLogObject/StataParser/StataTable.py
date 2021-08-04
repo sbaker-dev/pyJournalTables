@@ -1,4 +1,4 @@
-from stataLogObject.Configs.ConfigObj import MFVar, PValue, ZScore, TableEntry, Table
+from stataLogObject.Configs.ConfigObj import MFVar, Table
 from stataLogObject.Supports.supports import extract_values, clean_value
 from stataLogObject.Supports.Errors import HeaderKeyExtractError, InvalidKeyExtract
 
@@ -20,8 +20,9 @@ class StataTable:
         self._raw = raw_table
         self.config = config
 
-        # For the body isolate, format the indexes relative to the length of the table
-        self.config.body_iso.format_indexes(len(self._raw))
+        # For the body isolate, create reference and format the indexes relative to the length of the table
+        self.iso = self.config.body_iso
+        self.iso.format_indexes(len(self._raw))
 
         # Set the supporting table header values
         [setattr(self, f, self.set_mf_value(getattr(self.config.mf, f), f)) for f in self.config.mf.field_names()]
@@ -83,8 +84,7 @@ class StataTable:
         """
 
         # Isolate results with tables based on table line delimiters, skip indexes in the skip_indexes if provided
-        result_indexes = [i for i, line in enumerate(self._raw) if
-                          ("|" in line) and (i not in self.config.body_iso.skip_indexes)]
+        result_indexes = [i for i, line in enumerate(self._raw) if ("|" in line) and (i not in self.iso.skip_indexes)]
 
         # Isolate these lines without the table line elements
         body_lines = self._extract_body_lines(result_indexes)
@@ -108,7 +108,7 @@ class StataTable:
         body_lines = []
         for index, line in enumerate(self._raw):
             # TODO: This feels like a very strange if statement...
-            if min(result_indexes) + self.config.body_iso.skip_lines <= index and index in result_indexes:
+            if min(result_indexes) + self.iso.skip_lines <= index and index in result_indexes:
 
                 # Not all regression types will be without blanks, so this only adds rows that where the value is more
                 # than just he name of the variable
