@@ -25,6 +25,9 @@ reghdfe drate medage marriage, absorb(i.region)
 * Reghdfe with absorbed degrees of freedom with clustering
 reghdfe drate medage marriage, absorb(i.region) cluster(region)
 
+* Mixed 
+mixed drate medage marriage || region: medage marriage
+
 * Generate a binary variable for probit / logit
 gen regionN = region
 gen north = 0
