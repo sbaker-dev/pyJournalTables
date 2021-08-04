@@ -28,7 +28,8 @@ class StataTable:
         [setattr(self, f, self.set_mf_value(getattr(self.config.mf, f), f)) for f in self.config.mf.field_names()]
         self.model_fit = {f: getattr(self, f) for f in self.config.mf.field_names() if getattr(self, f) is not None}
 
-        # Extract phenotype, variable names, and the table body
+        # Extract phenotype, variable names, and the table body in row form
+        self.table_col_names = self.iso.body_type.entry_names
         self.phenotype, self.body_values = self._extract_body()
 
     def set_mf_value(self, mf_var, var_name):
@@ -138,12 +139,12 @@ class StataTable:
         :rtype: list[list]
         """
         value_lines = [[clean_value(value) for value in line] for line in body_lines[1:]]
-        return [line if len(line) == len(self.config.headers) else self._line_format(line) for line in value_lines]
+        return [line if len(line) == len(self.table_col_names) else self._line_format(line) for line in value_lines]
 
     def _line_format(self, line):
         """Format line relative to the number of table headers"""
-        values = line[-(len(self.config.headers) - 1):]
-        var_name = "_".join(line[:-(len(self.config.headers) - 1)])
+        values = line[-(len(self.table_col_names) - 1):]
+        var_name = "_".join(line[:-(len(self.table_col_names) - 1)])
         return [var_name] + values
 
     @property
