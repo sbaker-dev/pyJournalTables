@@ -1,6 +1,5 @@
-from stataLogObject.Configs.ConfigObj import MFVar, Table
-from stataLogObject.Supports.supports import extract_values, clean_value
-from stataLogObject.Supports.Errors import HeaderKeyExtractError, InvalidKeyExtract
+from stataLogObject.Supports.supports import clean_value
+from stataLogObject.Configs.ConfigObj import Table
 
 
 class StataTable:

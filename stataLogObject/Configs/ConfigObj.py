@@ -1,6 +1,5 @@
 from stataLogObject.Configs import *
 
-from miscSupports import load_yaml
 from dataclasses import dataclass
 from abc import ABC
 
