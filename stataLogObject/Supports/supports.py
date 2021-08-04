@@ -75,4 +75,9 @@ def methods_in_line(var_name, cf, lb, ub, rd=2):
     :param rd: How many decimal places you want to round to
     :return: A string representation of this line
     """
-    return f"{var_name}\t(RD={round(float(cf), rd)}, 95%CI: {round(float(lb), rd)}; {round(float(ub), rd)})\n"
+    return f"{var_name}\t(RD={round(float(cf), rd)}, 95%CI: {conf_interval(lb, ub, rd)})\n"
+
+
+def conf_interval(lb_95, ub_95, rounding=4):
+    """Set the confidence interval as a string of str((Min_CI; Max_CI)), where the CI's can be rounded"""
+    return f"{round(lb_95, rounding)}; {round(ub_95, rounding)}"
