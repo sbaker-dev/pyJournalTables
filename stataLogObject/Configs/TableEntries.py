@@ -59,3 +59,16 @@ class PValue(Entry):
 
     def entry_type(self):
         return PValue
+
+
+@dataclass
+class Summary(Entry):
+    var_name: str = None
+    obs: int = None
+    mean: float = None
+    std_dev: float = None
+    v_min: float = None
+    v_max: float = None
+
+    def entry_type(self):
+        return Summary

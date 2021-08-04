@@ -35,6 +35,16 @@ class TableConfigs:
         ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7])
     )
 
+    # fe_within: Table = Table(
+    #
+    # )
+
+    summary: Table = Table(
+        MF(),
+        ExtractBody(Summary()),
+        ExtractTable(['Variable', '|', 'Obs', 'Mean', 'Std.', 'Dev.', 'Min', 'Max'], 0),
+    )
+
 
 class ConfigObj:
     def __init__(self, path_to_yaml):
