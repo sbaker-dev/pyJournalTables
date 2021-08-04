@@ -68,7 +68,7 @@ class PValue(TableEntry):
 
 
 @dataclass
-class IsolateBody:
+class ExtractBody:
     skip_lines: int = 0
     skip_indexes: List = field(default_factory=lambda: [])
     p_value: bool = True
@@ -105,7 +105,7 @@ class Extractor:
 @dataclass
 class Table(ABC):
     mf: MF
-    body_iso: IsolateBody
+    body_iso: ExtractBody
     table_ext: Extractor
     headers: List
 
@@ -115,7 +115,7 @@ class TableConfigs:
     ols: Table = Table(
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F =', 3),
                  MFVar('R-squared =', 3), MFVar('Root MSE =', 3), MFVar('Adj R-squared =')),
-        IsolateBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
+        ExtractBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
         Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
         LINEAR_HEADERS
     )
@@ -123,7 +123,7 @@ class TableConfigs:
     ols_clu: Table = Table(
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE =')),
-        IsolateBody(),
+        ExtractBody(),
         Extractor(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
         LINEAR_HEADERS
     )
@@ -131,7 +131,7 @@ class TableConfigs:
     hdfe: Table = Table(
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE ='), MFVar('Adj R-squared ='), MFVar("Within R-sq. =")),
-        IsolateBody(1),
+        ExtractBody(1),
         Extractor(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
         LINEAR_HEADERS
     )
