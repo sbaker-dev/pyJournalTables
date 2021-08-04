@@ -118,12 +118,8 @@ class StataTable:
         return body_lines
 
     def _create_table_entries(self, body_lines):
-        """Clean the values which are not the table header, create P or Z values accordingly"""
-        cleaned_lines = self._limit_var_names(body_lines)
-        if self.config.body_iso.p_value:
-            return [PValue(var, cof, std, pp, lb, ub, pv) for var, cof, std, pv, pp, lb, ub in cleaned_lines]
-        else:
-            return [ZScore(var, cof, std, zp, lb, ub, zs) for var, cof, std, zs, zp, lb, ub in cleaned_lines]
+        """Clean the values which are not the table header, create Entry of type Body_Type for each line accordingly"""
+        return [self.iso.body_type.create_entry(line) for line in self._limit_var_names(body_lines)]
 
     def _limit_var_names(self, body_lines):
         """
