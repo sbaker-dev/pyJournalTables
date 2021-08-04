@@ -26,7 +26,7 @@ class StataLog:
         # TODO: Random-effects
 
         # Mixed
-        # TODO:
+        self.mixed = self.create_tables(self.config.mixed)
 
         # Summary
         self.summary = self.create_tables(self.config.summary)
@@ -47,7 +47,7 @@ class StataLog:
 a = StataLog(r"C:\Users\Samuel\PycharmProjects\stataLogObject\DoLogs\StataLog.log")
 
 
-b = a.fe_within[0]
+b = a.ols[0]
 print(b.model_fit)
 print(b.body_values)
 print(b.table_columns)
