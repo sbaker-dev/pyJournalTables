@@ -41,37 +41,25 @@ class StataLog:
         """
         return [StataTable(table, config) for table in StataRaw(self.log_path, config.table_ext).raw_tables]
 
+    def censure_log(self):
+        """
+        Logs from stata often contain a path which can be problematic if they are to sensitive locations so this
+        censures them.
 
+        :return: Nothing, override the log file
+        :rtype: None
+        """
 
-#
-a = StataLog(r"C:\Users\Samuel\PycharmProjects\stataLogObject\DoLogs\StataLog.log")
+        # Remove the path to log: locations
+        log_raw = []
+        with open(self.log_path, "r") as log_file:
+            for line in log_file:
+                if "log:" in line:
+                    log_raw.append(f"{line.split(':')[0]}: \n")
+                else:
+                    log_raw.append(line)
 
-
-b = a.ols[0]
-print(b.model_fit)
-print(b.body_values)
-print(b.table_columns)
-
-def forest_plot(table, exclusions=None):
-    """
-
-    :param table:
-    :type table: StataTable
-    :param exclusions:
-    :return:
-    """
-
-    if exclusions is None:
-        row_indexes = [i for i, _ in enumerate(table.var_names)]
-    else:
-        row_indexes = [i for i, var in enumerate(table.var_names) if var not in exclusions]
-
-    # Isolate each rows values
-    output = []
-    for index, (var, coef, lb, ub) in enumerate(zip(table.var_names, table.coefficients, table.lb_95, table.ub_95)):
-        if index in row_indexes:
-            output.append([var, coef, lb, ub])
-
-    print(output)
-
-# forest_plot(b, ['_cons'])
+        # Override the file
+        with open(self.log_path, "w") as log_file:
+            for line in log_raw:
+                log_file.write(line)

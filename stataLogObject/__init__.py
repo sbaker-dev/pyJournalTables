@@ -1,2 +1,1 @@
-from stataLogObject.StataParser import StataExtractor
-from stataLogObject.Writers import write_forest_methods
+from .StataParser.StataLog import StataLog
