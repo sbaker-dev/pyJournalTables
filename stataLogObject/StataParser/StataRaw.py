@@ -1,4 +1,4 @@
-from stataLogObject.Configs.ConfigObj import Extractor
+from stataLogObject.Configs.ConfigObj import ExtractTable
 from stataLogObject.Configs.supports import clean_line
 
 from pathlib import Path
@@ -12,7 +12,7 @@ class StataRaw:
         :type log_path: Path
 
         :param isolator: The Extraction elements for this table, contains dividers, space count and skip indexes
-        :type isolator: Extractor
+        :type isolator: ExtractTable
         """
 
         # Initializers

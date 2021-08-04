@@ -86,7 +86,7 @@ class ExtractBody:
 
 
 @dataclass
-class Extractor:
+class ExtractTable:
     """
     | Contains the information needed for extraction
     |
@@ -106,7 +106,7 @@ class Extractor:
 class Table(ABC):
     mf: MF
     body_iso: ExtractBody
-    table_ext: Extractor
+    table_ext: ExtractTable
     headers: List
 
 
@@ -116,7 +116,7 @@ class TableConfigs:
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F =', 3),
                  MFVar('R-squared =', 3), MFVar('Root MSE =', 3), MFVar('Adj R-squared =')),
         ExtractBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
-        Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
+        ExtractTable(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
         LINEAR_HEADERS
     )
 
@@ -124,7 +124,7 @@ class TableConfigs:
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE =')),
         ExtractBody(),
-        Extractor(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
+        ExtractTable(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
         LINEAR_HEADERS
     )
 
@@ -132,7 +132,7 @@ class TableConfigs:
         LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='), MFVar('R-squared ='),
                  MFVar('Root MSE ='), MFVar('Adj R-squared ='), MFVar("Within R-sq. =")),
         ExtractBody(1),
-        Extractor(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
+        ExtractTable(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
         LINEAR_HEADERS
     )
 
