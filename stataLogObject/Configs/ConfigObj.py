@@ -4,6 +4,9 @@ from dataclasses import dataclass, field, fields
 from typing import List, Optional
 
 
+LINEAR_HEADERS = ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
+
+
 @dataclass
 class Header:
     extractor: str
@@ -80,6 +83,7 @@ class IsolateBody:
 
         self.skip_indexes = [v if v >= 0 else (table_length - 2) + v for v in self.skip_indexes]
 
+
 @dataclass
 class Extractor:
     """
@@ -112,7 +116,7 @@ class TableConfigs:
                   Header('Root MSE ='), Header('Adj R-squared =')),
         IsolateBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
         Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
-        ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
+        LINEAR_HEADERS
     )
 
     ols_clu: Table = Table(
@@ -120,7 +124,7 @@ class TableConfigs:
                   Header('Root MSE =')),
         IsolateBody(),
         Extractor(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
-        ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", "conf_95_min", "conf_95_max"]
+        LINEAR_HEADERS
     )
 
 
