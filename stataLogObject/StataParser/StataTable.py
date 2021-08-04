@@ -25,7 +25,7 @@ class StataTable:
 
         # Set the supporting table header values
         [setattr(self, s, self.set_header_value(getattr(self.config.rhs, s), s)) for s in self.config.rhs.field_names()]
-        self.header_values = {s: getattr(self, s) for s in self.config.rhs.field_names()}
+        self.header_values = {s: getattr(self, s) for s in self.config.rhs.field_names() if getattr(self, s)}
 
         # Extract phenotype, variable names, and the table body
         self.phenotype, self.body_values = self._extract_body()
