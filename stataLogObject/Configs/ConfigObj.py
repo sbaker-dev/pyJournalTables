@@ -12,7 +12,8 @@ class Header:
 
 
 @dataclass
-class RHS(ABC):
+class MF(ABC):
+    """Model Fit base class"""
     obs: Header
 
     def field_names(self):
@@ -21,7 +22,8 @@ class RHS(ABC):
 
 
 @dataclass
-class LinearRHS(RHS):
+class LinearMF(MF):
+    """Linear Regression model fit parameters"""
     f_stat: Header
     f_prob: Header
     R_sqr: Header
@@ -32,7 +34,8 @@ class LinearRHS(RHS):
 
 # TODO
 @dataclass()
-class LogisticRHS(RHS):
+class LogisticMF(MF):
+    """Logistical Regression model fit parameters"""
     pass
 
 
@@ -96,7 +99,7 @@ class Extractor:
 
 @dataclass
 class Table(ABC):
-    rhs: RHS
+    mf: MF
     body_iso: IsolateBody
     table_ext: Extractor
     headers: List

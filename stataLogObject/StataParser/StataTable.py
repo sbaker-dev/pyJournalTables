@@ -24,8 +24,8 @@ class StataTable:
         self.config.body_iso.format_indexes(len(self._raw))
 
         # Set the supporting table header values
-        [setattr(self, s, self.set_header_value(getattr(self.config.rhs, s), s)) for s in self.config.rhs.field_names()]
-        self.sum_values = {s: getattr(self, s) for s in self.config.rhs.field_names() if getattr(self, s) is not None}
+        [setattr(self, f, self.set_header_value(getattr(self.config.mf, f), f)) for f in self.config.mf.field_names()]
+        self.model_fit = {f: getattr(self, f) for f in self.config.mf.field_names() if getattr(self, f) is not None}
 
         # Extract phenotype, variable names, and the table body
         self.phenotype, self.body_values = self._extract_body()
