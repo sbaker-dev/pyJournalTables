@@ -8,7 +8,7 @@ LINEAR_HEADERS = ["var_name", "coefficients", "std_errs", "t_stats", "p_stats", 
 
 
 @dataclass
-class Header:
+class MFVar:
     extractor: str
     key_extract: int = 0
     var_type: type = float
@@ -17,7 +17,7 @@ class Header:
 @dataclass
 class MF(ABC):
     """Model Fit base class"""
-    obs: Header
+    obs: MFVar
 
     def field_names(self):
         """Returns the summary information"""
@@ -27,13 +27,13 @@ class MF(ABC):
 @dataclass
 class LinearMF(MF):
     """Linear Regression model fit parameters"""
-    f_stat: Header
-    f_prob: Header
-    R_sqr: Header
-    r_mse: Header
+    f_stat: MFVar
+    f_prob: MFVar
+    R_sqr: MFVar
+    r_mse: MFVar
 
-    adj_r_sqr: Optional[Header] = None
-    within_r_sqr: Optional[Header] = None
+    adj_r_sqr: Optional[MFVar] = None
+    within_r_sqr: Optional[MFVar] = None
 
 
 # TODO
@@ -113,24 +113,24 @@ class Table(ABC):
 @dataclass()
 class TableConfigs:
     ols: Table = Table(
-        LinearMF(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F =', 3),
-                 Header('R-squared =', 3), Header('Root MSE =', 3), Header('Adj R-squared =')),
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F =', 3),
+                 MFVar('R-squared =', 3), MFVar('Root MSE =', 3), MFVar('Adj R-squared =')),
         IsolateBody(skip_indexes=[0, 1, 2, 3, 4, 5]),
         Extractor(['Source', '|', 'SS', 'df', 'MS', 'Number', 'of', 'obs', '='], 1, [9]),
         LINEAR_HEADERS
     )
 
     ols_clu: Table = Table(
-        LinearMF(Header('Number of obs =', var_type=int), Header("F("), Header('Prob > F ='), Header('R-squared ='),
-                 Header('Root MSE =')),
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F("), MFVar('Prob > F ='), MFVar('R-squared ='),
+                 MFVar('Root MSE =')),
         IsolateBody(),
         Extractor(['Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [6]),
         LINEAR_HEADERS
     )
 
     hdfe: Table = Table(
-        LinearMF(Header('Number of obs =', var_type=int), Header("F(", 2), Header('Prob > F ='), Header('R-squared ='),
-                 Header('Root MSE ='), Header('Adj R-squared ='), Header("Within R-sq. =")),
+        LinearMF(MFVar('Number of obs =', var_type=int), MFVar("F(", 2), MFVar('Prob > F ='), MFVar('R-squared ='),
+                 MFVar('Root MSE ='), MFVar('Adj R-squared ='), MFVar("Within R-sq. =")),
         IsolateBody(1),
         Extractor(['HDFE', 'Linear', 'regression', 'Number', 'of', 'obs', '='], 1, [7]),
         LINEAR_HEADERS

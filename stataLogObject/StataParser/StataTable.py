@@ -1,4 +1,4 @@
-from stataLogObject.Configs.ConfigObj import Header, PValue, ZScore, TableEntry, Table
+from stataLogObject.Configs.ConfigObj import MFVar, PValue, ZScore, TableEntry, Table
 from stataLogObject.Configs.supports import extract_values, clean_value
 from stataLogObject.Configs.Errors import HeaderKeyExtractError, InvalidKeyExtract
 
@@ -24,18 +24,18 @@ class StataTable:
         self.config.body_iso.format_indexes(len(self._raw))
 
         # Set the supporting table header values
-        [setattr(self, f, self.set_header_value(getattr(self.config.mf, f), f)) for f in self.config.mf.field_names()]
+        [setattr(self, f, self.set_mf_value(getattr(self.config.mf, f), f)) for f in self.config.mf.field_names()]
         self.model_fit = {f: getattr(self, f) for f in self.config.mf.field_names() if getattr(self, f) is not None}
 
         # Extract phenotype, variable names, and the table body
         self.phenotype, self.body_values = self._extract_body()
 
-    def set_header_value(self, header, var_name):
+    def set_mf_value(self, mf_var, var_name):
         """
-        Set a given header value
+        Set a given model fit value
 
-        :param header:
-        :type header: Header | None
+        :param mf_var: The model fit variables attributes to use to isolate this model fit variable
+        :type mf_var: MFVar | None
 
         :param var_name: The name of this header for Error Handling
         :type var_name: str
@@ -48,13 +48,13 @@ class StataTable:
         """
 
         # Some Headers are optional, return None if this occurs
-        if not header:
+        if not mf_var:
             return None
 
         for line in self._raw:
 
             line_str = " ".join(line)
-            if header.extractor in line_str:
+            if mf_var.extractor in line_str:
                 values = extract_values(line_str)
 
                 # Some variables may be found, but not set. For example F stat when very small sample. Warn user when
@@ -66,11 +66,11 @@ class StataTable:
                 # Try to return the value with the given header.key_extract index (default 0)
                 else:
                     try:
-                        return header.var_type(values[header.key_extract])
+                        return mf_var.var_type(values[mf_var.key_extract])
                     except (KeyError, IndexError):
-                        raise HeaderKeyExtractError(header.key_extract, values, var_name)
+                        raise HeaderKeyExtractError(mf_var.key_extract, values, var_name)
 
-        raise InvalidKeyExtract(header.extractor, var_name)
+        raise InvalidKeyExtract(mf_var.extractor, var_name)
 
     def _extract_body(self):
         """
