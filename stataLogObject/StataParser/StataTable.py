@@ -1,5 +1,8 @@
 from stataLogObject.Configs.ConfigObj import Table
 
+from miscSupports import flip_list
+from csvObject import write_csv
+
 
 class StataTable:
     def __init__(self, raw_table, config):
@@ -39,4 +42,6 @@ class StataTable:
         else:
             return getattr(self.config.mf, f).find_mf(self._raw, f)
 
-
+    def body_to_csv(self, write_directory, write_name):
+        """Write the body as a csv to the write directory called 'write_name'.csv"""
+        write_csv(write_directory, write_name, list(self.table_columns.keys()), flip_list(self.table_columns.values()))
