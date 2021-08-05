@@ -36,6 +36,10 @@ class StataTable:
         [setattr(self, f"tb_{field}", [getattr(v, field) for v in self.body_values])for field in self.table_col_names]
         self.table_columns = {field: getattr(self, f"tb_{field}") for field in self.table_col_names}
 
+    def __repr__(self):
+        """Debug string"""
+        return f"{self.phenotype}={len(self.table_columns['var_name'])}Var"
+
     def _set_mf(self, f):
         """Set a given model fit parameter if it has been set, else return None as this variable was optional"""
         if not getattr(self.config.mf, f):
