@@ -45,10 +45,11 @@ class TableConfigs:
 
     )
 
+    # TODO: Need to create an optional bool within VarField and create a new method type called GroupVar to handle the
+    #   multiple (and potentially absent) group variable definitions
     mixed: Table = Table(
-        MixedMF(MFVar('Number of obs =', var_type=int), MFVar('Number of groups =', var_type=int),
-                MFVar('min =', int), MFVar('avg ='), MFVar('max =', int), MFVar('Wald chi2'),
-                MFVar('Prob > chi2 =', key_extract=1), MFVar('Log likelihood ='), REVar('Random-effects Parameters')),
+        MixedMF(MFVar('Number of obs =', var_type=int), MFVar('Wald chi2'), MFVar('Prob > chi2 =', key_extract=1),
+                MFVar('Log likelihood ='), REVar('Random-effects Parameters')),
         ExtractTable(['Mixed-effects', 'ML', 'regression', 'Number', 'of', 'obs', '='], 4, [7]),
         ExtractBody(PValue())
 

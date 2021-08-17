@@ -128,10 +128,6 @@ class PanelMF(MF):
 @dataclass
 class MixedMF(MF):
     obs: MFVar
-    groups: MFVar
-    obs_group_min: MFVar
-    obs_group_avg: MFVar
-    obs_group_max: MFVar
     wald: MFVar
     chi2_prob: MFVar
     log_like: MFVar
