@@ -49,3 +49,10 @@ class RandomParameters(VariableHolder):
     def total_variance(self):
         """Total variance of the random parameters"""
         return sum([est for _, est, _, _, _ in self.parameters])
+
+
+# TODO: add as dict
+class GroupParameter(VariableHolder):
+
+    def as_dict(self):
+        return

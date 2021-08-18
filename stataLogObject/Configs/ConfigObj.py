@@ -35,6 +35,7 @@ class TableConfigs:
 
     )
 
+    # TODO: Change group vars to GroupVar
     fe_within: Table = Table(
         PanelMF(MFVar('Number of obs =', var_type=int), MFVar('Number of groups =', var_type=int),
                 MFVar('min =', int, key_extract=1), MFVar('avg =', key_extract=1), MFVar('max =', int, key_extract=1),

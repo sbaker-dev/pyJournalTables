@@ -1,5 +1,5 @@
 from stataLogObject.Supports import HeaderKeyExtractError, InvalidKeyExtract, extract_values
-from stataLogObject.Configs.VariableHolders import RandomParameters
+from stataLogObject.Configs.VariableHolders import RandomParameters, GroupParameter
 
 from dataclasses import dataclass
 from abc import abstractmethod
@@ -90,12 +90,24 @@ class GroupVar(VarField):
             else:
                 return self._mf_extract_var(values, var_name)
         else:
-            #TODO
-            values_list = []
-            return self._extract_var(values_list, var_name)
+
+            # Extract the indexes from the table
+            indexes = [i for i, line in enumerate(lines_list)
+                       if i > index and ("|" in line) and (len(line) == 6) and ('var' not in " ".join(line))]
+
+            # Return a group parameter, destroying these lines in the raw loaded table
+            return GroupParameter(self._extract_var(lines_list, indexes))
 
     def _extract_var(self, values_list, var_name):
-        return
+
+        # Extract the group elements from the list
+        indexes = var_name
+        values = [[element for element in values_list[i] if element != "|"] for i in indexes]
+
+        # Strip this line from the raw table so it doesn't interfere with the body
+        for i in range(min(indexes) - 3, max(indexes) + 1):
+            values_list[i] = ['']
+        return values
 
     def _mf_extract_var(self, values_list, var_name):
         """Extract the value from the key if found"""
