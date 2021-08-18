@@ -1,10 +1,7 @@
-import sys
-
 from stataLogObject.Supports import HeaderKeyExtractError, InvalidKeyExtract, extract_values
 from stataLogObject.Configs.VariableHolders import RandomParameters
 
-from dataclasses import dataclass, field
-from typing import List
+from dataclasses import dataclass
 from abc import abstractmethod
 
 
@@ -54,8 +51,6 @@ class MFVar(VarField):
 @dataclass
 class REVar(VarField):
     """Random effects parameters"""
-    key_extract: List = field(default_factory=lambda: [0, 1, 2, 3, 4])
-    re_headers: List = field(default_factory=lambda: ["Name", "Est", "Std Err", "LB_95", "UB_95"])
 
     def _extract_mf(self, index, lines_list, var_name):
         # Extract each random parameter as a dict
@@ -74,10 +69,5 @@ class REVar(VarField):
         if len(values) == 0:
             print(f"Warning: {var_name} not set yet requested")
             return "N/A"
-
-        # For each key in RE return the header-value of the random effects parameters
-        try:
+        else:
             return values
-
-        except (KeyError, IndexError):
-            raise HeaderKeyExtractError(self.key_extract, values, var_name)
