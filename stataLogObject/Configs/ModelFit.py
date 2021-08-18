@@ -1,4 +1,4 @@
-from stataLogObject.Configs.ModelVars import MFVar, REVar
+from stataLogObject.Configs.ModelVars import MFVar, REVar, GroupVar
 
 from dataclasses import dataclass, fields
 from typing import Optional
@@ -53,6 +53,10 @@ class PanelMF(MF):
 class MixedMF(MF):
     obs: MFVar
     wald: MFVar
+    obs_group_min: GroupVar
+    obs_group_avg: GroupVar
+    obs_group_max: GroupVar
+    group_table: GroupVar
     chi2_prob: MFVar
     log_like: MFVar
     re_params: REVar

@@ -37,9 +37,9 @@ class TableConfigs:
 
     fe_within: Table = Table(
         PanelMF(MFVar('Number of obs =', var_type=int), MFVar('Number of groups =', var_type=int),
-                MFVar('min =', int, 1), MFVar('avg =', float, 1), MFVar('max =', int, 1), MFVar("F("),
-                MFVar('Prob > F =', key_extract=1), MFVar('within ='), MFVar('between ='), MFVar('overall ='),
-                MFVar('sigma_u |'), MFVar('sigma_e |'), MFVar('rho |')),
+                MFVar('min =', int, key_extract=1), MFVar('avg =', key_extract=1), MFVar('max =', int, key_extract=1),
+                MFVar("F("), MFVar('Prob > F =', key_extract=1), MFVar('within ='), MFVar('between ='),
+                MFVar('overall ='), MFVar('sigma_u |'), MFVar('sigma_e |'), MFVar('rho |')),
         ExtractTable(['Fixed-effects', '(within)', 'regression', 'Number', 'of', 'obs', '='], 3, [7]),
         ExtractBody(PValue())
 
@@ -48,8 +48,9 @@ class TableConfigs:
     # TODO: Need to create an optional bool within VarField and create a new method type called GroupVar to handle the
     #   multiple (and potentially absent) group variable definitions
     mixed: Table = Table(
-        MixedMF(MFVar('Number of obs =', var_type=int), MFVar('Wald chi2'), MFVar('Prob > chi2 =', key_extract=1),
-                MFVar('Log likelihood ='), REVar('Random-effects Parameters')),
+        MixedMF(MFVar('Number of obs =', var_type=int), MFVar('Wald chi2'), GroupVar('min =', int, True),
+                GroupVar('avg =', int, True), GroupVar('max =', int, True), GroupVar('Group Variable', int, True),
+                MFVar('Prob > chi2 =', key_extract=1), MFVar('Log likelihood ='), REVar('Random-effects Parameters')),
         ExtractTable(['Mixed-effects', 'ML', 'regression', 'Number', 'of', 'obs', '='], 4, [7]),
         ExtractBody(PValue())
 

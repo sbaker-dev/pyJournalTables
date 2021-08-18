@@ -9,6 +9,7 @@ from abc import abstractmethod
 class VarField:
     extractor: str
     var_type: type = float
+    optional: bool = False
 
     def find_mf(self, lines_list, var_name):
         """Find the model fit parameter in the lines list"""
@@ -16,7 +17,10 @@ class VarField:
             if self.extractor in " ".join(line):
                 return self._extract_mf(i, lines_list, var_name)
 
-        raise InvalidKeyExtract(self.extractor, var_name)
+        if not self.optional:
+            raise InvalidKeyExtract(self.extractor, var_name)
+        else:
+            return 'N/F'
 
     @abstractmethod
     def _extract_mf(self, index, lines_list, var_name):
@@ -71,3 +75,31 @@ class REVar(VarField):
             return "N/A"
         else:
             return values
+
+
+class GroupVar(VarField):
+    key_extract: int = 0
+
+    def _extract_mf(self, index, lines_list, var_name):
+        if var_name != "group_table":
+            values = extract_values(" ".join(lines_list[index]))
+
+            if len(values) == 0:
+                print(f"Warning: {var_name} not set yet requested")
+                return "N/A"
+            else:
+                return self._mf_extract_var(values, var_name)
+        else:
+            #TODO
+            values_list = []
+            return self._extract_var(values_list, var_name)
+
+    def _extract_var(self, values_list, var_name):
+        return
+
+    def _mf_extract_var(self, values_list, var_name):
+        """Extract the value from the key if found"""
+        try:
+            return self.var_type(values_list[self.key_extract])
+        except (KeyError, IndexError):
+            raise HeaderKeyExtractError(self.key_extract, values_list, var_name)
