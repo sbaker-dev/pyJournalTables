@@ -1,4 +1,7 @@
+import sys
+
 from stataLogObject.Supports import HeaderKeyExtractError, InvalidKeyExtract, extract_values
+from stataLogObject.Configs.VariableHolders import RandomParameters
 
 from dataclasses import dataclass, field
 from typing import List
@@ -51,16 +54,15 @@ class MFVar(VarField):
 @dataclass
 class REVar(VarField):
     """Random effects parameters"""
-    key_extract: List = field(default_factory=lambda: [0, 1, 2, 3])
-    re_headers: List = field(default_factory=lambda: ["Est", "Std Err", "LB_95", "UB_95"])
+    key_extract: List = field(default_factory=lambda: [0, 1, 2, 3, 4])
+    re_headers: List = field(default_factory=lambda: ["Name", "Est", "Std Err", "LB_95", "UB_95"])
 
     def _extract_mf(self, index, lines_list, var_name):
         # Extract each random parameter as a dict
         random_params = [self._extract_var(line, var_name) for i, line in enumerate(lines_list)
                          if i > index and ("|" in line) and (":" not in " ".join(line))]
 
-        # Merge the dicts into a master dict to return
-        return {f"{list(rp.keys())[0]}_{i}": list(rp.values())[0] for i, rp in enumerate(random_params)}
+        return RandomParameters(random_params)
 
     def _extract_var(self, values_list, var_name):
 
@@ -68,15 +70,14 @@ class REVar(VarField):
         var_name = " ".join(values_list[:-4]).strip("|").strip(" ")
 
         # Extract the values that are the last 4, SE calculation can fail so allow for missing
-        values = extract_values(" ".join(values_list[-4:]), False)
+        values = [var_name] + extract_values(" ".join(values_list[-4:]), False)
         if len(values) == 0:
             print(f"Warning: {var_name} not set yet requested")
             return "N/A"
 
         # For each key in RE return the header-value of the random effects parameters
         try:
-            return {var_name: {h: values[i] if values[i] == "MISSING" else self.var_type(values[i])
-                               for h, i in zip(self.re_headers, self.key_extract)}}
+            return values
+
         except (KeyError, IndexError):
             raise HeaderKeyExtractError(self.key_extract, values, var_name)
-
