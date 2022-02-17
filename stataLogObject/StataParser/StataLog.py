@@ -28,6 +28,7 @@ class StataLog:
         self.mixed = self.create_tables(self.config.mixed)
 
         # Summary
+        # TODO: Summary fails when there are no obs
         self.summary = self.create_tables(self.config.summary)
         self.tabulate = self.create_tables(self.config.tabulate)
 
