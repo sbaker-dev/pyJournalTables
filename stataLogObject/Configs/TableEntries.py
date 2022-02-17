@@ -74,6 +74,10 @@ class Summary(Entry):
     def entry_type(self):
         return Summary
 
+    def conf_interval(self):
+        """Lower and upper 95% CI"""
+        return [self.mean - self.std_dev, self.mean + self.std_dev]
+
 
 @dataclass
 class Tabulate(Entry):
